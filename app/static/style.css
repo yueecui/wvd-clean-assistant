@@ -1,0 +1,50 @@
+:root {
+  --bg: #14120f; --panel: #1e1a15; --line: #3a3128; --fg: #e8e0d4;
+  --dim: #9a8f80; --gold: #d8a53d; --green: #7fb069; --red: #c25b4e;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); height: 100vh;
+  display: flex; flex-direction: column; overflow: hidden;
+  font: 14px/1.5 "Segoe UI", "Microsoft YaHei", sans-serif; }
+h1 { font-size: 18px; margin: 0; }
+h1 small { color: var(--dim); font-weight: normal; font-size: 12px; margin-left: 8px; }
+h2 { font-size: 13px; color: var(--gold); margin: 0 0 8px; font-weight: 600; }
+h2 span { color: var(--dim); font-weight: normal; }
+
+header { display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 16px; background: var(--panel); border-bottom: 1px solid var(--line); }
+.conn { display: flex; gap: 8px; align-items: center; }
+.conn input { width: 250px; }
+input, select, button, .btn {
+  background: #26211b; color: var(--fg); border: 1px solid var(--line);
+  border-radius: 4px; padding: 6px 10px; font: inherit; text-decoration: none;
+  display: inline-block; cursor: pointer; }
+button:disabled { opacity: .45; cursor: default; }
+button.primary { background: var(--gold); color: #1c150a; font-weight: 600; }
+button.danger { color: var(--red); border-color: #6b3229; }
+
+.controls { display: flex; gap: 12px; align-items: center;
+  padding: 10px 16px; border-bottom: 1px solid var(--line); background: #191510; }
+.progress { flex: 1; display: flex; align-items: center; gap: 10px; min-width: 200px; }
+.bar { flex: 1; height: 8px; background: #2b241c; border-radius: 4px; overflow: hidden; max-width: 420px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--green); transition: width .3s; }
+.bar i.run { background: linear-gradient(90deg, var(--gold), #f0c96a);
+  width: 100%; animation: pulse 1.4s infinite ease-in-out; }
+@keyframes pulse { 0%,100% { opacity: .35; } 50% { opacity: 1; } }
+#stat { color: var(--dim); font-size: 13px; white-space: nowrap; }
+
+main { flex: 1; display: grid; grid-template-columns: 360px 1fr; gap: 12px;
+  padding: 12px 16px; min-height: 0; }
+.logpane, .tablepane { background: var(--panel); border: 1px solid var(--line);
+  border-radius: 6px; padding: 10px 12px; display: flex; flex-direction: column; min-height: 0; }
+#log { margin: 0; flex: 1; overflow: auto; font: 12px/1.6 Consolas, monospace;
+  color: #b9ae9c; white-space: pre-wrap; word-break: break-all; }
+.tablepane { overflow: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); }
+th { color: var(--dim); font-weight: 600; position: sticky; top: 0; background: var(--panel); }
+td.st { color: #f2e7cf; letter-spacing: 1px; white-space: nowrap; }
+
+#connState { font-size: 12px; }
+#connState.ok { color: var(--green); }
+#connState.bad { color: var(--red); }

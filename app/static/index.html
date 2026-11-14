@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WVD 装备梳理</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>WVD 装备梳理 <small>截图扫描</small></h1>
+  <div class="conn">
+    <input id="adbPath" placeholder="adb.exe 路径（留空自动）">
+    <select id="serial"></select>
+    <button id="btnRefresh" title="刷新设备">↻</button>
+    <span id="connState"></span>
+  </div>
+</header>
+
+<section class="controls">
+  <button id="btnStart" class="primary">▶ 开始扫描</button>
+  <button id="btnStop" class="danger" disabled>■ 停止</button>
+  <div class="progress">
+    <div class="bar"><i id="barFill"></i></div>
+    <span id="stat">待开始</span>
+  </div>
+  <a href="/api/export.csv" download="wvd_equipment.csv" class="btn">导出 CSV</a>
+  <button id="btnClear">清空结果</button>
+</section>
+
+<main>
+  <section class="logpane">
+    <h2>运行日志</h2>
+    <pre id="log"></pre>
+  </section>
+  <section class="tablepane">
+    <h2>扫描结果 <span id="cnt">(0 件)</span></h2>
+    <table>
+      <thead><tr><th>#</th><th>名称</th><th>★</th><th>附加加护</th><th>锁</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </section>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

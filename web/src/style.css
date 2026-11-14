@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink-900: #0f1115;
+  --color-ink-800: #14161a;
+  --color-ink-700: #1a1e24;
+  --color-ink-600: #232830;
+  --color-gold-400: #d8a53d;
+  --color-gold-300: #e8bd63;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  background: var(--color-ink-900);
+  color: #e5e7eb;
+  font: 14px/1.55 system-ui, "Segoe UI", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 数字输入框不要上下箭头 */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #2f3742;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3c4653;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
