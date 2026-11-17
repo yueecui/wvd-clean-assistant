@@ -6,6 +6,22 @@
   详情：名称 y≈380（x>420），属性表 y 540~880，◆附加加护 y≈905，加护行 y≈946，
         强度上限 y≈1197。
   改造页：4 个加护槽（绿装只占第 1 个，y≈548），素材一览 y 880 起，行距约 97。
+
+素材列表（改造石）翻页要点：
+  · 界面里最多显示 5 行，一次手势只滚 4 行（≈390px），留 1 行重叠，
+    否则底部那行只露一半、点不准，滚过去就漏了（原来是滚 5 行多，基本不重叠）；
+  · ms=900/steps=15 的手势实测 1.9 秒仍稳定滚 4 行（比 1500/25 快 1/3，再快就只滚 3 行）；
+  · 列表顺序是固定的，全量扫描时把真实顺序记进 materials_order，
+    执行改造时按它估算目标在第几页，连续盲翻几页再截图确认，不用每页停一次；
+  · 进改造页时素材列表总在顶部（实测：退出再进来会重置），所以只有连着找几块
+    石头才需要回滚，回滚也是连翻 6 页再确认一次。
+
+素材定位两种方式（配置 materials_jump，界面可切）：
+  · slider（默认）：右侧有一条滚动条（900x1600 实测滑块 x≈851、轨道 y 948~1399、
+    95 行时滑块高 37px、可走 414px）。慢速 motionevent 拖滑块能直接跳到任意位置，
+    一次约 3 秒；回顶部也是一次拖到轨道顶端（约 2 秒）。滑块认不出来 / 拖不动时
+    自动退回逐页滚动。
+  · scroll（老方案）：完全没有滑块相关动作，纯拖列表翻页。
 """
 from __future__ import annotations
 
@@ -117,6 +133,20 @@ def stone_key(attr: str, lo: int, hi: int, pct: bool) -> str:
     return f"{attr}+{lo}~{hi}{'%' if pct else ''}"
 
 
+def _page_of(order: list[str], key: str) -> int | None:
+    """这块石头在扫描顺序里的第几页（每页滚 MAT_SCROLL_ROWS 行）；没记录过返回 None。"""
+    try:
+        return int(order.index(key) / MAT_SCROLL_ROWS)
+    except (ValueError, AttributeError):
+        return None
+
+
+def _match_stone(m: dict, stone: dict) -> bool:
+    """素材行是不是要找的那块石头（属性 + 区间 + 是否百分比）。"""
+    return (m["attr"] == stone["attr"] and m["lo"] == stone["lo"]
+            and m["hi"] == stone["hi"] and bool(m["pct"]) == bool(stone.get("pct")))
+
+
 def _stone_id(s: dict) -> str:
     return s.get("key") or stone_key(s["attr"], s["lo"], s["hi"], bool(s.get("pct")))
 
@@ -167,23 +197,20 @@ UNKNOWN_STOCK = 9999   # 未扫描素材时的占位库存，执行中按游戏�
 def normalize_stones(raw: list[dict]) -> tuple[list[dict], list[str]]:
     """执行前过滤：只留 1★/2★，返回 (可用石头, 被排除的说明)。
 
-    unscanned=True 表示没扫过素材、数量未知：给占位库存，真正数量在执行改造
-    拉动素材列表时由 _record_materials 回填；石头不存在则整轮拉完后置 0。
+    **启动时不判定「有没有」**：配置里保存的数量可能早就过期（扫描过但后来用掉 /
+    又攒回来了），所以一律按「数量未知」处理，执行时到游戏列表里现找；
+    真的一整轮都找不到，才把这块石头记为 0 并换下一块，全都没找到就停。
+    unscanned=True 的老配置（没扫过素材）同样按未知处理。
     """
     ok, blocked = [], []
     for s in refresh_stones(raw):
-        count = int(s.get("count") or 0)
-        unscanned = bool(s.get("unscanned"))
-        if count <= 0 and not unscanned:
-            continue
         if s.get("grade") not in (1, 2):
             blocked.append(f"{s.get('key') or s.get('text') or '?'}"
                            f"({s.get('grade') or '无法判定'}★)")
             continue
         s = dict(s)
-        if unscanned:
-            s["count"] = UNKNOWN_STOCK
-            s["text"] = f"{s['key']}x?"
+        s["count"] = UNKNOWN_STOCK
+        s["text"] = f"{s['key']}x?"
         ok.append(s)
     return ok, blocked
 
@@ -302,6 +329,43 @@ def parse_materials(png: bytes) -> list[dict]:
     return out
 
 
+def _runs(mask: np.ndarray) -> list[tuple[int, int]]:
+    """把布尔序列切成连续 True 的区间 [(起, 止)]（止为下标本身）。"""
+    d = np.diff(np.concatenate(([0], mask.astype(np.int8), [0])))
+    return list(zip(np.flatnonzero(d == 1), np.flatnonzero(d == -1) - 1))
+
+
+def _mat_bar(png: bytes) -> tuple[int, int, int, int, int] | None:
+    """定位素材列表右侧的滚动条：(x, 滑块顶, 滑块底, 轨道顶, 轨道底)。
+
+    轨道用实测常量（界面固定），只动态找滑块那条亮条：轨道细线太暗，
+    阈值识别不稳（会把滑块顶端当成轨道顶端，导致算出的可拖动距离为 0）。
+    找不到滑块就返回 None，调用方退回逐页滚动，不会卡死。
+    """
+    img = _open(png)
+    sx, sy = _scale(img)
+    a = np.asarray(img.convert("L"))
+    ty0 = int(MAT_BAR_TRACK[0] * sy)
+    ty1 = min(a.shape[0] - 1, int(MAT_BAR_TRACK[1] * sy))
+    x0, x1 = int(MAT_BAR_X[0] * sx), int(MAT_BAR_X[1] * sx)
+    y0 = max(0, ty0 - int(12 * sy))
+    y1 = min(a.shape[0], ty1 + int(12 * sy))
+    best = None      # (长度, x, 顶, 底)
+    for c in range(x0, min(x1, a.shape[1])):
+        for seg in _runs(a[y0:y1, c] > 100):
+            ln = int(seg[1] - seg[0])
+            if ln < 8 or ln > (ty1 - ty0) // 2:
+                continue
+            if best is None or ln > best[0]:
+                best = (ln, c, int(seg[0] + y0), int(seg[1] + y0))
+    if best is None:
+        return None
+    _, c, th0, th1 = best
+    if th1 < ty0 - 8 or th0 > ty1 + 8:   # 不像这段轨道上的滑块
+        return None
+    return c, th0, th1, ty0, ty1
+
+
 def parse_slot(png: bytes) -> dict:
     """改造页第 1 个加护槽：{'before': 原属性, 'after': 目标区间文本}。
 
@@ -385,6 +449,24 @@ TAP_WAIT = 0.5
 PAGE_WAIT = 1.6
 ANIM_WAIT = 2.6
 
+# 素材一览翻页：行距约 97px，界面里最多显示 5 行。
+# 一次只滚 4 行（实测拖 394px 滚 4 行），和上一屏重叠 1 行 —— 原来滚 ≈500px（5 行多），
+# 一屏几乎不重叠，底部那行只露一半、点不准，滚过去就漏掉了。
+MAT_ROW_H = 97
+MAT_SCROLL_ROWS = 4
+# 手指位移比想要的滚动量多一点：实测 25 步时几乎 1:1（丢约 55px 的前一版是 10 步的情况）
+MAT_DRAG_PX = int(MAT_SCROLL_ROWS * MAT_ROW_H) + 6
+TOP_BATCH = 6          # 回顶部时连续盲翻几页再确认一次
+JUMP_BATCH = 6         # 按顺序估算位置时，一次最多连续盲翻几页
+
+# 素材列表右侧滚动条（900x1600 实测）：滑块 x≈851，轨道 y 948~1399，滑块高≈37。
+# 95 行时滑块只有 37px、能走 414px；慢速 motionevent 拖它能直接跳到任意位置，
+# 比逐页盲翻快得多（翻 90 行≈20 次手势、40 秒以上）。
+# 轨道上下端是固定界面元素，直接写常量：那条细线太暗，逐帧阈值识别会把滑块顶端当成轨道顶端。
+MAT_BAR_X = (838, 866)
+MAT_BAR_TRACK = (948, 1399)
+MAT_ROWS_ON_SCREEN = 5  # 素材列表一屏最多几行（列表区约 590px / 行距 97px）
+
 
 def _norm(s: str) -> str:
     return s.replace(" ", "").replace("～", "~").replace("−", "-").replace("＋", "+")
@@ -418,10 +500,12 @@ class Reformer:
         self._thread = None
         self._stop = False
         self._lock = threading.Lock()
+        self._wh: tuple[int, int] | None = None
         self._stones: list[dict] = []
         self._targets: list[str] = []   # 需要改造的属性（勾选才会改）
         self._stock: dict[str, int] = {}
         self._max_try = 2
+        self._jump = "slider"   # 素材定位方式：slider=拖右侧滚动条，scroll=逐页滚动
         self.logs: list[str] = []
         self.results: list[dict] = []
         self.status = {"running": False, "phase": "idle", "total": 0, "done": 0,
@@ -543,28 +627,89 @@ class Reformer:
             self._tap(_pct(*RESULT_CLOSE, img))
             time.sleep(1.0)
 
-    def _scroll_materials(self) -> None:
-        """一次拉一整页（约 5 行 / 500px）：必须慢速分步，快拖会被游戏忽略。"""
+    def _scroll_materials(self, pages: int = 1, up: bool = False) -> None:
+        """翻素材列表。一次手势滚 4 行（≈390px），pages>1 就连续做几个手势。
+
+        实测（900x1600）：ms=700/steps=12 一次手势 1.6 秒仍能稳定滚 4 行，
+        比原来 ms=1500/steps=25 的 2.9 秒快 45%；再快（ms=600）就只滚 3 行了。
+        中间不截图：连续翻几页再确认一次。
+        """
         if self._stop:
             return
-        img = self._img()
-        x = int(img.width * 0.5)
-        self._drag(x, int(img.height * 0.86), x, int(img.height * 0.5475),
-                   ms=1500, steps=25, hold=0.30)
-        time.sleep(0.7)
-
-    def _top_materials(self) -> None:
-        img = self._img()
-        x = int(img.width * 0.5)
-        for _ in range(12):
+        # 分辨率固定，尺寸缓存下来：翻页很频繁，每页都截一张图只为算坐标太浪费
+        if self._wh is None:
+            self._wh = self._img().size
+        w, h = self._wh
+        x = int(w * 0.5)
+        dy = int(MAT_DRAG_PX * h / BASE_H)
+        y_lo = int(h * 0.86)
+        y_hi = y_lo - dy
+        y_from, y_to = (y_hi, y_lo) if up else (y_lo, y_hi)
+        for i in range(max(1, pages)):
             if self._stop:
                 return
-            before = [m["text"] for m in parse_materials(self._png())]
-            self._drag(x, int(img.height * 0.5475), x, int(img.height * 0.86),
-                       ms=1500, steps=25, hold=0.30)
-            time.sleep(0.7)
-            if [m["text"] for m in parse_materials(self._png())] == before:
-                break
+            self._drag(x, y_from, x, y_to, ms=700, steps=12, hold=0.30)
+            if i + 1 < pages:
+                time.sleep(0.2)
+        time.sleep(0.4)
+
+    def _top_materials(self) -> None:
+        """回到素材顶部：先看一眼首行是不是顺序里的第一项，是就直接返回。
+
+        不是就用滑块（slider 模式）把滚动条拖回顶端，一次就到位；
+        没认出滑块时仍按原来的做法连续盲翻 TOP_BATCH 页再确认。
+        """
+        order = self._mat_order()
+        for _ in range(8):
+            if self._stop:
+                return
+            png = self._png()
+            mats = parse_materials(png)
+            if order and mats and mats[0]["key"] == order[0]:
+                return
+            before = [m["key"] for m in mats]
+            bar = _mat_bar(png) if self._jump == "slider" else None
+            if bar:
+                # 滑块方案：直接拖回轨道顶端，一次就到位（2px≈1 行，别用像素判断是否到顶）
+                x, th0, th1, tk0, _tk1 = bar
+                h = th1 - th0
+                self._drag(x, th0 + h // 2, x, tk0 + h // 2,
+                           ms=760, steps=14, hold=0.30)
+                time.sleep(0.45)
+            else:
+                self._scroll_materials(pages=TOP_BATCH, up=True)
+            if [m["key"] for m in parse_materials(self._png())] == before:
+                return
+
+    def _slider_jump(self, target_idx: int, order: list[str], mats: list[dict]) -> bool:
+        """拖右侧滚动条把目标石头挪到屏幕中间（滑块方案，一次 1~2 秒）。
+
+        位移按「当前首行在扫描顺序里的行号」算，所以跳不准的话下一轮会自己修正；
+        返回 False 表示这次用不了（没认出滑块 / 拖不动），调用方退回逐页滚动。
+        """
+        bar = _mat_bar(self._png())
+        if not bar or not mats:
+            return False
+        x, th0, th1, tk0, tk1 = bar
+        h = th1 - th0
+        travel = max(1, tk1 - tk0 - h)                  # 滑块可走的总距离
+        span = max(1, len(order) - MAT_ROWS_ON_SCREEN)  # 可滚动的「首行」范围
+        try:
+            cur_idx = order.index(mats[0]["key"])
+        except ValueError:
+            # 顺序和游戏里对不上（有石头被用掉）：只能按目标绝对位置估一次
+            frac = (target_idx - MAT_ROWS_ON_SCREEN // 2) / span
+            want_top = tk0 + int(round(max(0.0, min(1.0, frac)) * travel))
+        else:
+            # 让目标落在屏幕中间：首行应该滚到 target_idx - 半屏
+            dy_rows = (target_idx - MAT_ROWS_ON_SCREEN // 2) - cur_idx
+            want_top = th0 + int(round(dy_rows / span * travel))
+        want_top = int(max(tk0, min(tk1 - h, want_top)))
+        if abs(want_top - th0) < 4:
+            return False
+        self._drag(x, th0 + h // 2, x, want_top + h // 2, ms=760, steps=14, hold=0.30)
+        time.sleep(0.45)
+        return True
 
     # ---------- 素材扫描（后台任务，可停止） ----------
     def start_scan_materials(self, mode: str = "full") -> dict:
@@ -647,15 +792,20 @@ class Reformer:
         # 增量更新以已保存结果为底；从列表页全量扫描则从零开始替换
         base = [] if from_list else (store.load_reform_config().get("materials") or [])
         try:
+            # 从持有一览刚点进来时，素材列表本来就在顶部（实测退出再进会重置），
+            # 不用先回滚 —— 原来这里要白花 20 多秒。
             if from_list:
-                self._top_materials()
+                self._log("素材列表在顶部，直接往下扫")
             seen: dict[str, dict] = {}
+            order: list[str] = []          # 从上到下的真实顺序（只有全量扫描才有效）
             same = 0
-            for _ in range(30):
+            mats = parse_materials(self._png())
+            for _ in range(60):
                 if self._stop:
                     break
-                mats = parse_materials(self._png())
                 for m in mats:
+                    if from_list and m["key"] not in order:
+                        order.append(m["key"])
                     prev = seen.get(m["key"])
                     if prev is None or m["count"] > prev["count"]:
                         seen[m["key"]] = {
@@ -665,7 +815,7 @@ class Reformer:
                         }
                 # 每屏落盘：扫描中或中途停止，前端都能看到已扫到的数据
                 items = self._merge_scan_items(seen, mode, base)
-                store.save_reform_materials(items, mode)
+                store.save_reform_materials(items, mode, order=order if from_list else None)
                 with self._lock:
                     self.status["current"] = f"已更新 {len(seen)} 种素材"
                     self.status["done"] = len(items)
@@ -675,16 +825,21 @@ class Reformer:
                 if self._stop:
                     break
                 self._scroll_materials()
-                nxt = parse_materials(self._png())
                 sig = [m["key"] for m in mats]
+                nxt = parse_materials(self._png())
+                # 这一屏的解析结果直接留给下一轮，别又截一次图 OCR 一遍
                 if not nxt or [m["key"] for m in nxt] == sig:
                     same += 1
                     if same >= 2:
                         break
                 else:
                     same = 0
+                mats = nxt
             items = self._merge_scan_items(seen, mode, base)
-            store.save_reform_materials(items, mode)
+            store.save_reform_materials(items, mode, order=order if from_list else None)
+            if from_list and order:
+                self._log(f"已记录素材在列表里的顺序（{len(order)} 项），"
+                          f"执行改造时按它连续翻页定位")
             return {"ok": True, "materials": items}
         finally:
             if from_list:
@@ -716,11 +871,16 @@ class Reformer:
         self._targets = targets
         self._stock = {_stone_id(s): int(s["count"]) for s in stones}
         self._max_try = int(conf.get("max_try") or 2)
+        self._jump = "scroll" if conf.get("materials_jump") == "scroll" else "slider"
         with self._lock:
             self.results = []
         self._begin("装备改造", "start")
         self._log(f"开始：只改造 {'、'.join(targets)}；石头顺序 "
-                  + " > ".join(f"{_stone_id(s)}x{s['count']}" for s in stones))
+                  + " > ".join(_stone_id(s) for s in stones))
+        self._log("素材定位：拖右侧滚动条跳到目标"
+                  if self._jump == "slider" else "素材定位：逐页滚动")
+        self._log("启动时不判定持有量（配置里的数量可能过期），按顺序到游戏列表里现找；"
+                  "一整轮都找不到才换下一块石头，全都找不到才停")
         if blocked:
             self._log(f"已排除非 1★/2★ 配置 {len(blocked)} 项：" + "、".join(blocked))
         self._thread = threading.Thread(target=self._run, daemon=True)
@@ -819,7 +979,7 @@ class Reformer:
             return
         stone = self._pick_stone()
         if not stone:
-            self._log("石头用完，停止")
+            self._log("配置里的改造石全都在游戏列表里找不到（或已用完），停止")
             self._stop = True
             return
         got = self._reform_one(row, stone)
@@ -958,24 +1118,38 @@ class Reformer:
     def _select_stone(self, stone: dict) -> tuple[bool, str]:
         """滚到目标石头 → 长按选中 → 槽位预览校验；沿途把素材数量写回持久化表。
 
+        列表顺序固定（全量扫描时记在 materials_order 里），所以先按顺序估算目标
+        在第几页，连续盲翻过去再确认一次；估算不准或没有顺序记录时，退回逐页扫描。
+
         返回 (是否选中, 原因)：ok / not_found（列表拉完也没有）/
         select_failed（找到但选中失败）/ stopped（用户停止）。
         """
-        want = _norm(stone_key(stone["attr"], stone["lo"], stone["hi"],
-                               bool(stone.get("pct"))))
+        key = stone_key(stone["attr"], stone["lo"], stone["hi"], bool(stone.get("pct")))
+        want = _norm(key)
         self._top_materials()
-        for _ in range(15):
+        # 列表顺序是固定的，全量扫描时记下了真实顺序 → 知道目标大概在第几页，
+        # 可以连续盲翻几页再确认一次，不用每页都停下来截图。
+        order = self._mat_order()
+        want_page = _page_of(order, key)
+        want_idx = order.index(key) if key in order else None
+        slider = want_idx is not None and self._jump == "slider"
+        jumps = 0        # 滑块方案这次已经跳了几次，跳不准就退回逐页滚动
+        nudged = False
+        for _ in range(24):
             if self._stop:
                 return False, "stopped"
             mats = parse_materials(self._png())
             self._record_materials(mats)
-            for m in mats:
-                if (m["attr"] != stone["attr"] or m["lo"] != stone["lo"]
-                        or m["hi"] != stone["hi"]
-                        or bool(m["pct"]) != bool(stone.get("pct"))):
+            sig = [m["key"] for m in mats]
+            hit = next((m for m in mats if _match_stone(m, stone)), None)
+            if hit is not None:
+                if not nudged and hit["y"] > MAT_Y[1] - 140:
+                    # 贴在列表底边、多半只露半行的位置点不准：先往上挪一页再选
+                    nudged = True
+                    self._scroll_materials(pages=1)
                     continue
                 for _try in range(self._max_try + 1):
-                    self._long((m["tap"][0], m["tap"][1]), 420)
+                    self._long((hit["tap"][0], hit["tap"][1]), 420)
                     time.sleep(0.9)
                     slot = parse_slot(self._png())
                     got = _norm(slot["after"])
@@ -983,8 +1157,34 @@ class Reformer:
                         return True, "ok"
                     self._log(f"  选中校验不符（预览「{slot['after'] or '空'}」），重试")
                 return False, "select_failed"
-            sig = [m["key"] for m in mats]
-            self._scroll_materials()
+            if not mats:
+                return False, "not_found"
+            if slider and jumps < 3:
+                jumps += 1
+                if self._slider_jump(int(want_idx), order, mats):
+                    if self._stop:
+                        return False, "stopped"
+                    nxt = parse_materials(self._png())
+                    self._record_materials(nxt)
+                    if nxt and [m["key"] for m in nxt] != sig:
+                        continue          # 跳过去了：下一轮从头判断目标在不在
+                    jumps = 3             # 拖了但画面没动 —— 这块界面不认拖动
+                    self._log("  滑块拖动没生效，改回逐页滚动")
+                elif jumps >= 3:
+                    self._log("  滑块跳了几次没到位，改回逐页滚动")
+            pages = 1
+            if want_page is not None:
+                cur = _page_of(order, mats[0]["key"])
+                if cur is not None and cur > want_page:
+                    # 记下的顺序比游戏里旧（中间的石头被用掉了），估算会偏后：
+                    # 放弃跳页，回顶部老老实实逐页找，保证不漏
+                    self._log("  顺序和游戏里对不上（有石头被用掉），改成逐页查找")
+                    want_page = None
+                    self._top_materials()
+                    continue
+                if cur is not None and want_page > cur:
+                    pages = max(1, min(want_page - cur - 1, JUMP_BATCH))
+            self._scroll_materials(pages=pages)
             if self._stop:
                 return False, "stopped"
             nxt = parse_materials(self._png())
@@ -992,6 +1192,11 @@ class Reformer:
             if not nxt or [m["key"] for m in nxt] == sig:
                 return False, "not_found"
         return False, "not_found"
+
+    @staticmethod
+    def _mat_order() -> list[str]:
+        import store
+        return list(store.load_reform_config().get("materials_order") or [])
 
     def _fail(self, msg: str) -> None:
         self._end("error", msg, msg)

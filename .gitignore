@@ -17,6 +17,7 @@ data/
 result/
 rules/
 config/
+log/
 
 # 临时调试
 tmp/

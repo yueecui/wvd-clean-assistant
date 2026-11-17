@@ -15,6 +15,8 @@ const chosenStones = ref<ReformStone[]>([])
 const reformAttrs = ref<string[]>([])
 const attrRows = ref<AttrRow[]>([])
 const maxTry = ref(2)
+/** 素材定位方式：slider=拖右侧滚动条（快），scroll=逐页滚动（老方案，可切回） */
+const materialsJump = ref<'slider' | 'scroll'>('slider')
 const busy = ref(false)
 const errMsg = ref('')
 const notice = ref('')
@@ -76,8 +78,24 @@ const taskTime = computed(() => {
     : `${label} · 开始 ${clockText(st.started_at)} · 已用 ${used}`
 })
 const chosenKeys = computed(() => chosenStones.value.map((s) => s.key))
-const chosenCount = computed(() => chosenStones.value.reduce((n, m) => n + (m.count || 0), 0))
-const hasUnknown = computed(() => chosenStones.value.some((m) => m.unscanned))
+/** 数量只认素材表（左侧列表 / 扫描结果），右侧已选石头不再单独记一份 */
+const matByKey = computed(() => {
+  const map = new Map<string, ReformStone>()
+  materials.value.forEach((m) => map.set(m.key, m))
+  return map
+})
+/** 该石头在素材表里的持有量；null = 表里没有（没扫到 / 还没扫过），数量未知 */
+function stoneStock(s: ReformStone): number | null {
+  const m = matByKey.value.get(s.key)
+  return m ? (m.count || 0) : null
+}
+function stockText(s: ReformStone): string {
+  const n = stoneStock(s)
+  return n === null ? 'x?' : `x${n}`
+}
+/** 合计 = 已选石头在素材表里的数量之和 */
+const chosenCount = computed(() => chosenStones.value.reduce((n, s) => n + (stoneStock(s) ?? 0), 0))
+const hasUnknown = computed(() => chosenStones.value.some((s) => stoneStock(s) === null))
 
 type ResultTab = 'all' | 'ok' | 'other'
 const RESULT_TABS: { key: ResultTab; label: string }[] = [
@@ -163,8 +181,13 @@ function usable(m: ReformStone) {
 function buildConfig(): ReformConfigSave {
   return {
     reform_attrs: reformAttrs.value.slice(),
-    stones: chosenStones.value.map((m) => ({ ...m })),
+    // 石头只存身份和优先级，持有量一律由素材表提供（执行时也会到游戏列表里现找）
+    stones: chosenStones.value.map((m) => ({
+      attr: m.attr, lo: m.lo, hi: m.hi, pct: m.pct,
+      grade: m.grade, count: 0, text: '', key: m.key,
+    })),
     max_try: maxTry.value,
+    materials_jump: materialsJump.value,
   }
 }
 
@@ -173,6 +196,7 @@ async function loadAll() {
     const c = await api.getReformConfig()
     reformAttrs.value = c.reform_attrs || []
     maxTry.value = c.max_try || 2
+    materialsJump.value = c.materials_jump === 'scroll' ? 'scroll' : 'slider'
     materials.value = c.materials || []
     stoneGrid.value = c.stone_grid || []
     materialsAt.value = c.materials_at || 0
@@ -186,20 +210,10 @@ async function loadAll() {
 
 async function refreshMaterials() {
   const c = await api.getReformConfig()
+  // 只更新素材表：执行中后端会把沿途读到的真实数量写回这里，
+  // 右侧已选石头的数量直接由它计算（见 matByKey / stoneStock），不用再同步一份
   materials.value = c.materials || []
   materialsAt.value = c.materials_at || 0
-  // 执行中后端会把沿途读到的真实数量写回配置；同步到右侧已选石头，
-  // 未扫描的 x? 变成实际数量，消耗掉的也会逐件减少
-  const byKey = new Map<string, ReformStone>()
-  materials.value.forEach((m) => byKey.set(m.key, m))
-  let changed = false
-  const next = chosenStones.value.map((s) => {
-    const m = byKey.get(s.key)
-    if (!m || (!s.unscanned && m.count === s.count && m.text === s.text)) return s
-    changed = true
-    return { ...s, count: m.count, text: m.text, grade: m.grade ?? s.grade, unscanned: false }
-  })
-  if (changed) chosenStones.value = next
 }
 
 let pollTicks = 0
@@ -451,7 +465,7 @@ onBeforeUnmount(() => {
             </div>
           </div>
         </div>
-        <div class="mt-2 flex items-center gap-2 text-[12px] text-gray-500">
+        <div class="mt-2 flex flex-wrap items-center gap-2 text-[12px] text-gray-500">
           单件选中重试上限
           <input
             v-model.number="maxTry"
@@ -460,6 +474,15 @@ onBeforeUnmount(() => {
             max="6"
             class="w-14 rounded border border-white/10 bg-ink-700 px-1.5 py-0.5 text-center text-gray-200 outline-none"
           />
+          素材定位
+          <select
+            v-model="materialsJump"
+            :disabled="running"
+            class="rounded border border-white/10 bg-ink-700 px-1.5 py-0.5 text-gray-200 outline-none"
+          >
+            <option value="slider">拖滚动条跳转</option>
+            <option value="scroll">逐页滚动</option>
+          </select>
           <span class="text-gray-600">只允许 1★ / 2★ 石头；高级石头不可添加</span>
         </div>
       </div>
@@ -509,9 +532,9 @@ onBeforeUnmount(() => {
 
         <div class="flex min-w-0 flex-1 flex-col">
           <div class="border-b border-white/10 px-3 py-1.5 text-[12px] text-gray-400">
-            使用的改造石与优先级（上 = 先用，库存耗尽自动切下一个）
-            <span class="ml-1 text-gray-500">已选 {{ chosenStones.length }} 种低级石头 · 合计 {{ chosenCount }} 个</span>
-            <span v-if="hasUnknown" class="ml-1 text-amber-300/80">· 含数量未知，执行时自动读取</span>
+            使用的改造石与优先级（上 = 先用；列表里没有就切下一个）
+            <span class="ml-1 text-gray-500">已选 {{ chosenStones.length }} 种低级石头 · 素材表合计 {{ chosenCount }} 个</span>
+            <span v-if="hasUnknown" class="ml-1 text-amber-300/80">· 有未扫到的，数量未知（执行时到游戏里现找）</span>
           </div>
           <div class="min-h-0 flex-1 overflow-auto">
             <div
@@ -522,7 +545,7 @@ onBeforeUnmount(() => {
               <span class="w-5 text-gray-600">{{ i + 1 }}</span>
               <span class="text-gray-500">{{ stoneLabel(m) }}</span>
               <span class="min-w-0 flex-1 truncate text-gray-200">{{ m.key }}</span>
-              <span class="tabular-nums text-gray-500">x{{ m.unscanned ? '?' : m.count }}</span>
+              <span class="tabular-nums text-gray-500">{{ stockText(m) }}</span>
               <button class="px-0.5 text-gray-500 hover:text-gray-200" :disabled="running" @click="moveStone(m.key, -1)">▲</button>
               <button class="px-0.5 text-gray-500 hover:text-gray-200" :disabled="running" @click="moveStone(m.key, 1)">▼</button>
               <button class="px-0.5 text-rose-400/70 hover:text-rose-300" :disabled="running" @click="removeStone(m.key)">✕</button>

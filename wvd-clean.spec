@@ -31,7 +31,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='wvd-scan',
+    name='wvd-clean',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

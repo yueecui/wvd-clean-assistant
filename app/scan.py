@@ -13,6 +13,8 @@ from __future__ import annotations
 
 import io
 import os
+import queue
+import sys
 import threading
 import time
 
@@ -24,11 +26,33 @@ import notify
 import parse
 import perf
 import rules
+import runtime
+import store
 
 SCROLL_PX = 720          # 约 7 行：一屏 8 行，留 1 行重叠供高亮锚点定位
 SCROLL_MS = 1100         # 距离加大后同步放慢拖动，避免惯性滚过头
 TAP_WAIT = 0.45          # 点击后等详情刷新
 SCROLL_WAIT = 1.15       # 滑动后等列表停稳
+
+SAVE_EVERY = 20          # 扫描中途落盘：每新增 20 件存一次
+SAVE_INTERVAL = 30.0     # 或者距上次落盘超过 30 秒（件数少时兜底）
+
+# 流水线：主线程只做「点击 + 截图」，识图交给 OCR 线程，两者并行。
+# 队列上限控制提前量（一张 PNG 约 1~2MB），满了主线程会等一下，不会堆爆内存。
+# OCR 单线程消费：多线程能再快一点，但会打乱落库顺序、还要按倍数吃 CPU，
+# 真正的瓶颈收益来自「截图不等识别」，所以先只做流水线不做并发识别。
+QUEUE_MAX_DEFAULT = 4    # 队列上限默认值：越大越能提前截，越吃内存
+QUEUE_MAX_MIN = 1
+QUEUE_MAX_MAX = 8
+
+
+def clamp_queue_max(value, default: int = QUEUE_MAX_DEFAULT) -> int:
+    """队列上限只接受 1~8 的整数；非法值回默认，超界夹紧。"""
+    try:
+        n = int(value)
+    except (TypeError, ValueError):
+        return default
+    return max(QUEUE_MAX_MIN, min(n, QUEUE_MAX_MAX))
 
 
 def _clock(ts: float) -> str:
@@ -47,16 +71,24 @@ class Scanner:
     def __init__(self, adb: str, serial: str):
         self.adb = adb
         self.serial = serial
+        self.queue_max = QUEUE_MAX_DEFAULT   # OCR 队列上限（1~8），由界面配置
         self._thread: threading.Thread | None = None
+        self._ocr_thread: threading.Thread | None = None
+        self._q: queue.Queue | None = None
         self._stop = False
         self._lock = threading.Lock()
         self.items: list[dict] = []
         self.logs: list[str] = []
         self._scanned: set[int] = set()
         self._anchor_idx = 0
+        self._file = ""            # 本次扫描的目标结果文件（中途落盘用）
+        self._base_count = 0       # 开始扫描时已有的件数（用来算本次新增）
+        self._saved_count = 0      # 上次落盘时的件数
+        self._saved_at = 0.0       # 上次落盘时间
         self.status = {"running": False, "phase": "idle", "scanned": 0,
                        "current": "", "error": None, "task": "",
-                       "started_at": None, "finished_at": None}
+                       "started_at": None, "finished_at": None,
+                       "elapsed": 0.0, "run_started_at": None, "per_item": None}
 
     # ---------- 设备 ----------
     def _png(self) -> bytes:
@@ -83,12 +115,49 @@ class Scanner:
             self.logs.append(msg)
             if len(self.logs) > 200:
                 self.logs = self.logs[-200:]
-        print("[scan]", msg)
+        try:
+            print("[scan]", msg)
+        except Exception:  # noqa: BLE001
+            # 控制台编码不支持 ✔✗🔒 这类字符时不能让 OCR 线程直接崩掉
+            try:
+                enc = sys.stdout.encoding or "utf-8"
+                print("[scan]", msg.encode(enc, "replace").decode(enc, "replace"))
+            except Exception:  # noqa: BLE001
+                pass
 
     def snapshot(self) -> dict:
         with self._lock:
             return {"status": dict(self.status), "items": list(self.items),
                     "logs": self.logs[-60:]}
+
+    def _persist(self, force: bool = False) -> None:
+        """扫描途中定期落盘：每 SAVE_EVERY 件或每 SAVE_INTERVAL 秒一次。
+
+        以前只在扫完（或手动保存）时写盘，中途崩溃/断线整轮数据都没了。
+        写盘统一用开始时的目标文件，扫描期间打开历史结果也不会写串。
+        """
+        with self._lock:
+            n = len(self.items)
+            if not n:
+                return
+            if not force and n == self._saved_count:
+                return
+            now = time.time()
+            if (not force and n - self._saved_count < SAVE_EVERY
+                    and now - self._saved_at < SAVE_INTERVAL):
+                return
+            snap = [dict(it) for it in self.items]  # 快照：写盘期间 items 还会增长
+            name = self._file
+            self._saved_count = n
+            self._saved_at = now
+        try:
+            name = (store.save_results_as(name, snap) if name
+                    else store.save_results(snap))
+        except Exception as e:  # noqa: BLE001  落盘失败不能让扫描挂掉
+            self._log(f"⚠ 中途保存失败：{e}")
+            return
+        self._file = name
+        self._log(f"已保存 {len(snap)} 件 → {name}")
 
     # ---------- 主流程 ----------
     def start(self, base_items: list[dict] | None = None) -> dict:
@@ -106,11 +175,24 @@ class Scanner:
             self.logs = []
             self.status = {"running": True, "phase": "start", "scanned": len(base),
                            "current": "", "error": None, "task": "装备扫描",
-                           "started_at": ts, "finished_at": None}
+                           "started_at": ts, "finished_at": None,
+                           "elapsed": 0.0, "run_started_at": None, "per_item": None}
+            runtime.begin(self.status, ts)
         self._log(f"[{_clock(ts)}] 装备扫描开始")
         # 去重集合只对本次扫描有效：列表位置每次都变，沿用上次的会整屏跳过
         self._scanned = set()
         self._anchor_idx = 0
+        # 中途落盘固定写这个文件（避免扫描期间用户打开历史结果导致写串）
+        self._file = store.current_file()
+        self._base_count = len(base)   # 续扫时用来算「本次新增」
+        self._saved_count = len(base)
+        self._saved_at = ts
+        # 流水线队列 + 常驻 OCR 线程（每轮扫描新建，跑完即退出）
+        self.queue_max = clamp_queue_max(self.queue_max)
+        self._q = queue.Queue(maxsize=self.queue_max)
+        self._ocr_thread = threading.Thread(target=self._ocr_loop, args=(self._q,),
+                                            name="wvd-ocr", daemon=True)
+        self._ocr_thread.start()
         self._thread = threading.Thread(target=self._run, daemon=True)
         self._thread.start()
         return {"ok": True}
@@ -125,34 +207,46 @@ class Scanner:
     def _run(self) -> None:
         perf.begin_task()
         try:
-            # 不回列表顶部：直接从当前看到的列表位置开始（重复可接受）
-            self._log("从当前列表位置开始扫描…" if not self.items
-                      else f"续扫：已有 {len(self.items)} 件，从当前列表位置继续…")
-            time.sleep(0.4)
-
-            rows = self._read_rows()
-            if not rows:
-                self._fail("未识别到列表行：请确认游戏停在装备列表界面")
-                return
-            self._assign_first(rows)
-            self._log(f"识别到 {len(rows)} 行（{rows[0]['name']} … {rows[-1]['name']}）")
-
-            while not self._stop:
-                pending = [r for r in rows if r["idx"] not in self._scanned]
-                if pending:
-                    self._scan_row(pending[0])
-                    perf.idle_sleep()
-                    continue
-                nxt = self._scroll_forward(rows)
-                if nxt is None:
-                    self._log(f"已到列表末尾，共 {len(self.items)} 件")
-                    break
-                rows = nxt
-            self._finish(f"扫描完成：{len(self.items)} 件")
-        except Exception as e:  # noqa: BLE001
-            self._fail(f"扫描异常: {e}")
+            error: str | None = None
+            try:
+                error = self._scan_all()
+            except Exception as e:  # noqa: BLE001
+                error = f"扫描异常: {e}"
+            # 先等 OCR 线程把队列里的图跑完，报完成时的件数才准、落盘也不缺尾巴
+            self._drain()
+            if error:
+                self._fail(error)
+            else:
+                self._finish(f"扫描完成：{len(self.items)} 件")
         finally:
             perf.end_task()
+
+    def _scan_all(self) -> str | None:
+        """主循环：只负责「点击 + 截图」并丢给 OCR 线程；出错时返回错误信息。"""
+        # 不回列表顶部：直接从当前看到的列表位置开始（重复可接受）
+        self._log("从当前列表位置开始扫描…" if not self.items
+                  else f"续扫：已有 {len(self.items)} 件，从当前列表位置继续…")
+        self._log("流水线：截图与 OCR 并行，OCR 队列上限 %d" % self.queue_max)
+        time.sleep(0.4)
+
+        rows = self._read_rows()
+        if not rows:
+            return "未识别到列表行：请确认游戏停在装备列表界面"
+        self._assign_first(rows)
+        self._log(f"识别到 {len(rows)} 行（{rows[0]['name']} … {rows[-1]['name']}）")
+
+        while not self._stop:
+            pending = [r for r in rows if r["idx"] not in self._scanned]
+            if pending:
+                self._scan_row(pending[0])
+                perf.idle_sleep()
+                continue
+            nxt = self._scroll_forward(rows)
+            if nxt is None:
+                self._log(f"已到列表末尾，共 {len(self.items)} 件")
+                break
+            rows = nxt
+        return None
 
     def _fail(self, msg: str) -> None:
         self._end("error", msg, msg)
@@ -165,10 +259,18 @@ class Scanner:
         with self._lock:
             self.status.update({"running": False, "phase": phase, "error": error,
                                 "current": "", "finished_at": ts})
-            started = self.status.get("started_at") or ts
+            elapsed = runtime.end(self.status, ts)     # 只算真正在跑的时间
             task = self.status.get("task") or "装备扫描"
-        total = _duration(ts - started)
-        self._log(f"[{_clock(ts)}] {msg} · 总用时 {total}")
+            count = len(self.items)
+        added = max(0, count - self._base_count)
+        per_sec = elapsed / added if added else None
+        per = f"{per_sec:.1f} 秒/件" if per_sec else "-"
+        total = _duration(elapsed)
+        with self._lock:
+            self.status["per_item"] = round(per_sec, 2) if per_sec else None
+        self._log(f"[{_clock(ts)}] {msg} · 运行 {total}")
+        self._log(f"[{_clock(ts)}] 本次新增 {added} 件（累计 {count} 件）· 平均 {per}")
+        self._persist(force=True)  # 结束/异常时兜底落盘，浏览器关掉也不丢
         notify.task_finished(task, phase, msg, total)
 
     def apply_alias(self, raw: str) -> int:
@@ -230,6 +332,7 @@ class Scanner:
         return i if v > 10 else None
 
     def _scan_row(self, row: dict) -> None:
+        """流水线生产端：只做点击 + 截图，不等识别，图直接排进 OCR 队列。"""
         with self._lock:
             # 已请求停止时不要覆盖「正在停止」提示
             if not self._stop:
@@ -239,14 +342,51 @@ class Scanner:
         self._tap(*row["tap"])
         self._anchor_idx = row["idx"]
         time.sleep(TAP_WAIT)
-        t1 = time.time()
         png = self._png()
+        with self._lock:
+            self._scanned.add(row["idx"])   # 图已到手：这行算扫过了，别再点一次
+        q = self._q
+        if q is None:
+            return
+        q.put((row, png, t0))               # 队列满时在这里等，限制提前量
+
+    # ---------- OCR 消费端 ----------
+    def _ocr_loop(self, q: queue.Queue) -> None:
+        """单线程按入队顺序识别 → 保证落库顺序与列表顺序一致。"""
+        while True:
+            task = q.get()
+            if task is None:
+                return
+            row, png, t0 = task
+            try:
+                self._commit_detail(row, png, t0)
+            except Exception as e:  # noqa: BLE001  单件出错不能让线程死掉
+                self._log(f"✗ 「{row.get('name')}」识别异常：{e}")
+
+    def _drain(self) -> None:
+        """让 OCR 线程把队列跑完再收工（否则最后几件会丢）。"""
+        q, t = self._q, self._ocr_thread
+        self._q = None
+        self._ocr_thread = None
+        if q is None or t is None:
+            return
+        for _ in range(int(getattr(q, "maxsize", 1) or 1) + 2):
+            if not t.is_alive():      # 线程已挂（不该发生）：别再干等
+                return
+            try:
+                q.put(None, timeout=1)
+                break
+            except queue.Full:
+                continue
+        t.join(timeout=180)
+
+    def _commit_detail(self, row: dict, png: bytes, t0: float) -> None:
+        """消费端：OCR 详情 → 建条目 → 去重 → 打分 → 落盘。"""
         t2 = time.time()
         detail = parse.parse_detail_only(png)
         t3 = time.time()
         if detail is None:
             self._log(f"✗ 「{row['name']}」详情解析失败，跳过")
-            self._scanned.add(row["idx"])
             return
         raw_name = detail["name"] if len(detail["name"]) >= len(row["name"]) else row["name"]
         m = match.match(raw_name)
@@ -258,8 +398,9 @@ class Scanner:
             "reinforce": m["reinforce"],
             "stars": detail["stars"],
             "blessings": detail["blessings"],
-            # 列表行与详情面板各有一处锁图标，任一命中即视为锁定
-            "locked": detail["locked"] or row["locked"],
+            # 锁定只看详情面板（名字下方的米黄挂锁）：列表行图标配色杂，
+            # 用列表锁图标判断容易把某些花哨图标误判成锁定
+            "locked": detail["locked"],
             # 品质色（白/绿/蓝/紫/红）：优先详情名，退回列表行名
             "color": detail.get("color") or row.get("color") or "",
             "equipment_id": m["id"],
@@ -273,7 +414,6 @@ class Scanner:
             "candidates": m["candidates"],
             "list_stars": row["stars"],
             "list_badge": row["badge"],
-            "list_locked": row["locked"],
         }
         if detail["name"] != row["name"]:
             self._log(f"⚠ 名称不一致：列表「{row['name']}」/ 详情「{detail['name']}」")
@@ -291,7 +431,6 @@ class Scanner:
                 self.items.append(item)
                 rules.apply_one(item, self.items)
                 self.status["scanned"] = len(self.items)
-        self._scanned.add(row["idx"])
         if dup:
             self._log(f"↺ 「{item['name']}」与已有第 {dup} 条相同，跳过")
             return
@@ -300,7 +439,9 @@ class Scanner:
                   f"{'+%d' % item['reinforce'] if item['reinforce'] else ''} "
                   f"{'★' * item['stars'] or '无星'} "
                   f"{' / '.join(item['blessings']) if item['blessings'] else '无加护'}"
-                  f"{' 🔒' if item['locked'] else ''}  {item['score']}分 ({t3 - t0:.1f}s)")
+                  f"{' 🔒' if item['locked'] else ''}  {item['score']}分"
+                  f" (OCR {t3 - t2:.1f}s / 共 {t3 - t0:.1f}s)")
+        self._persist()
 
     def _scroll_forward(self, rows: list[dict]) -> list[dict] | None:
         """滚动一屏；返回新行（含全局索引），到底返回 None。"""

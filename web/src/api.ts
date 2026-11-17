@@ -1,6 +1,9 @@
 import type {
   CatalogResp,
+  EnhanceSnap,
   FilterNotes,
+  LogFile,
+  RefineSnap,
   ReformConfig,
   ReformConfigSave,
   ReformSnap,
@@ -8,8 +11,12 @@ import type {
   RulesResp,
   ScanSnap,
   ScoreRule,
+  SellSnap,
   Settings,
 } from './types'
+
+/** 开始方式：新建日志 / 接着当前日志累加 */
+export type LogMode = 'new' | 'resume'
 
 async function getJson<T>(path: string): Promise<T> {
   const r = await fetch(path, { headers: { Accept: 'application/json' } })
@@ -33,6 +40,8 @@ export const saveSettings = (adb: string, serial: string) =>
   postJson<{ ok: boolean }>('/api/settings', { adb, serial })
 export const setCpuMode = (mode: string) =>
   postJson<{ ok: boolean }>('/api/settings', { cpu_mode: mode })
+export const setOcrQueue = (n: number) =>
+  postJson<{ ok: boolean }>('/api/settings', { ocr_queue: n })
 
 export const pickAdb = () => postJson<{ ok: boolean; path: string }>('/api/pick-adb', {})
 
@@ -46,6 +55,9 @@ export const startScan = (mode: ScanMode = 'new') =>
   postJson<{ ok: boolean; error?: string }>('/api/scan/start', { mode })
 export const stopScan = () => postJson<{ ok: boolean }>('/api/scan/stop')
 export const saveScan = () => postJson<{ ok: boolean; count: number }>('/api/scan/save')
+/** 分组标记：marks 为 1~3 的组，done=√（已处理） */
+export const markItem = (idx: number, marks: string[], done: boolean) =>
+  postJson<{ ok: boolean }>('/api/mark', { idx, marks, done })
 export const clearScan = () => postJson<{ ok: boolean }>('/api/clear')
 
 export const listResults = () => getJson<{ files: ResultFile[]; current: string }>('/api/results/list')
@@ -84,4 +96,29 @@ export const getReformStatus = () => getJson<ReformSnap>('/api/reform/status')
 export const startReform = (cfg: ReformConfigSave) =>
   postJson<{ ok: boolean; error?: string }>('/api/reform/start', cfg)
 export const stopReform = () => postJson<{ ok: boolean }>('/api/reform/stop', {})
+
+export const getRefineStatus = () => getJson<RefineSnap>('/api/refine/status')
+/** mode: new = 新建日志，resume = 接着当前日志累加 */
+export const startRefine = (mode: LogMode = 'new') =>
+  postJson<{ ok: boolean; error?: string; log_file?: string }>('/api/refine/start', { mode })
+export const stopRefine = () => postJson<{ ok: boolean }>('/api/refine/stop', {})
+export const listRefineLogs = () =>
+  getJson<{ files: LogFile[]; current: string }>('/api/refine/logs')
+export const openRefineLog = (file: string) =>
+  postJson<{ ok: boolean; error?: string; log_file?: string }>('/api/refine/open-log', { file })
+
+export const getSellStatus = () => getJson<SellSnap>('/api/sell/status')
+/** mode: new = 新建日志，resume = 接着当前日志累加 */
+export const startSell = (mode: LogMode = 'new') =>
+  postJson<{ ok: boolean; error?: string; log_file?: string }>('/api/sell/start', { mode })
+export const stopSell = () => postJson<{ ok: boolean }>('/api/sell/stop', {})
+export const listSellLogs = () =>
+  getJson<{ files: LogFile[]; current: string }>('/api/sell/logs')
+export const openSellLog = (file: string) =>
+  postJson<{ ok: boolean; error?: string; log_file?: string }>('/api/sell/open-log', { file })
+
+export const getEnhanceStatus = () => getJson<EnhanceSnap>('/api/enhance/status')
+export const startEnhance = () =>
+  postJson<{ ok: boolean; error?: string }>('/api/enhance/start', {})
+export const stopEnhance = () => postJson<{ ok: boolean }>('/api/enhance/stop', {})
 

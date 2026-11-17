@@ -4,8 +4,10 @@
 目录结构（根目录 = 绿色版 exe 同目录 / 源码工程根，或环境变量 WVD_SCAN_DATA）：
     config/   settings.json（界面设置） aliases.json（名称校准） current.json（当前结果文件）
               reform.json（改造配置） filter_notes.json（过滤器笔记） port.txt（运行时端口）
+              log_refine.json / log_sell.json（当前自动任务日志文件名）
     rules/    <规则名>.json（评分规则，运行时按需创建）
     result/   scan_YYYYmmdd_HHMMSS.json（扫描结果，运行时按需创建）
+    log/      refine_*.json / sell_*.json（自动提炼、自动出售的运行日志，运行时按需创建）
 
 绿色版不随包带 config/ rules/ result/，三者都由运行时按需创建，
 升级替换 exe / web 时不会覆盖用户自己的配置与笔记。
@@ -79,7 +81,7 @@ def _sane(name: str) -> str:
 # ---------- 过滤器笔记 ----------
 # 单独文件：只在运行时由用户编辑写入，不随绿色版发布，升级替换 exe/web 时不会被覆盖。
 
-FILTER_NOTE_KEYS = ("scan", "reform")
+FILTER_NOTE_KEYS = ("scan", "enhance", "reform", "refine", "sell")
 FILTER_NOTES_FILE = "filter_notes.json"
 
 
@@ -112,12 +114,18 @@ def save_settings(cfg: dict) -> None:
         _write(os.path.join(config_dir(), "settings.json"), cfg)
 
 
-# ---------- 强化绿装（改造）配置 ----------
+# ---------- 改造绿装配置 ----------
 
 _REFORM_DEFAULT = {"reform_attrs": [], "stones": [], "max_try": 2,
-                   "materials": [], "materials_at": 0, "materials_mode": ""}
+                   "materials": [], "materials_at": 0, "materials_mode": "",
+                   # 素材在游戏列表里的真实排列顺序（全量扫描时按从上到下记录），
+                   # 执行改造时靠它估算目标石头在第几页，连续盲翻过去再确认。
+                   "materials_order": [],
+                   # 素材定位方式：slider=拖右侧滚动条直接跳（快），
+                   # scroll=逐页滚动（老方案，滑块不灵时切回来用）
+                   "materials_jump": "slider"}
 # 前端「保存配置」只能写这些；materials 由扫描流程单独落盘，避免被普通保存覆盖
-_REFORM_SAVE_FIELDS = ("reform_attrs", "stones", "max_try")
+_REFORM_SAVE_FIELDS = ("reform_attrs", "stones", "max_try", "materials_jump")
 
 
 def load_reform_config() -> dict:
@@ -135,14 +143,132 @@ def save_reform_config(cfg: dict) -> dict:
     return out
 
 
-def save_reform_materials(items: list, mode: str) -> dict:
-    """保存素材扫描结果（含时间/模式），刷新页面后直接复用。"""
+def save_reform_materials(items: list, mode: str, order: list | None = None) -> dict:
+    """保存素材扫描结果（含时间/模式），刷新页面后直接复用。
+
+    order：游戏列表里的真实顺序（只有从顶部全量扫描才有），供连续翻页定位用；
+    传 None 表示这次扫描不是从头开始的，保留原来记下的顺序。
+    """
     with _LOCK:
         out = load_reform_config()
         out["materials"] = items
         out["materials_at"] = int(time.time())
         out["materials_mode"] = mode
+        if order is not None:
+            out["materials_order"] = order
         _write(os.path.join(config_dir(), "reform.json"), out)
+    return out
+
+
+# ---------- 自动提炼 / 自动出售 日志 ----------
+# 一种任务一个目录外文件：log/<kind>_YYYYmmdd_HHMMSS.json，
+# config/log_<kind>.json 记「当前日志」，跟扫描结果一样可以直接换着打开。
+
+LOG_KINDS = ("refine", "sell")
+
+
+def log_dir() -> str:
+    return _sub("log")
+
+
+def _log_cur_path(kind: str) -> str:
+    return os.path.join(config_dir(), f"log_{kind}.json")
+
+
+def _log_path(name: str) -> str:
+    return os.path.join(log_dir(), _sane(name))
+
+
+def current_log(kind: str) -> str:
+    """当前日志文件名（不含目录）；不存在时返回空串。"""
+    cfg = _read(_log_cur_path(kind), {}) or {}
+    name = _sane(cfg.get("file") or "")
+    if name and os.path.isfile(_log_path(name)):
+        return name
+    return ""
+
+
+def set_current_log(kind: str, name: str) -> None:
+    with _LOCK:
+        _write(_log_cur_path(kind), {"file": _sane(name)})
+
+
+def new_log(kind: str, title: str = "") -> str:
+    """新建一个空日志文件并设为当前，返回文件名。"""
+    base = _sane(title) or (f"{kind}_" + time.strftime("%Y%m%d_%H%M%S"))
+    name = base + ".json"
+    n = 1
+    while os.path.exists(_log_path(name)):
+        n += 1
+        name = f"{base}_{n}.json"
+    data = {"kind": kind, "task": "", "started_at": None, "finished_at": None,
+            "stats": {}, "logs": [], "results": []}
+    with _LOCK:
+        _write(_log_path(name), data)
+        _write(_log_cur_path(kind), {"file": name})
+    return name
+
+
+def save_log(kind: str, data: dict, name: str = "") -> str:
+    """写到当前日志（没有就新建）。name 为空表示沿用当前日志。"""
+    if not name:
+        name = current_log(kind) or new_log(kind)
+    name = _sane(name)
+    with _LOCK:
+        _write(_log_path(name), data)
+    return name
+
+
+def load_log(kind: str, name: str = "") -> dict:
+    name = _sane(name) or current_log(kind)
+    if not name:
+        return {}
+    data = _read(_log_path(name), {})
+    return data if isinstance(data, dict) else {}
+
+
+def open_log(kind: str, name: str) -> dict:
+    """打开某份历史日志并设为当前，返回内容（文件不存在返回空）。"""
+    name = _sane(name)
+    if not os.path.isfile(_log_path(name)):
+        return {}
+    set_current_log(kind, name)
+    data = _read(_log_path(name), {})
+    return data if isinstance(data, dict) else {}
+
+
+def list_logs(kind: str) -> list[dict]:
+    """[{file, title, batches, mtime, started_at, finished_at, elapsed}]，最近修改的在前。
+
+    elapsed 是累计运行秒数（停着的时间不算）；老日志没有这个字段时返回 None。
+    """
+    out = []
+    for fn in os.listdir(log_dir()):
+        if not fn.endswith(".json"):
+            continue
+        p = os.path.join(log_dir(), fn)
+        try:
+            st = os.stat(p)
+        except OSError:
+            continue
+        d = _read(p, {}) or {}
+        if not isinstance(d, dict):
+            continue
+        if d.get("kind") and d.get("kind") != kind:
+            continue
+        results = d.get("results") or []
+        elapsed = d.get("elapsed")
+        if not isinstance(elapsed, (int, float)):
+            # 老日志没有 elapsed：退回「结束 - 开始」
+            a, b = d.get("started_at"), d.get("finished_at")
+            elapsed = (b - a) if isinstance(a, (int, float)) and isinstance(b, (int, float)) else None
+        out.append({"file": fn, "title": fn[: -len(".json")],
+                    "batches": len(results) if isinstance(results, list) else 0,
+                    "mtime": st.st_mtime,
+                    "started_at": d.get("started_at"),
+                    "finished_at": d.get("finished_at"),
+                    "elapsed": float(elapsed) if isinstance(elapsed, (int, float)) else None})
+    out.sort(key=lambda x: -x["mtime"])
     return out
 
 
@@ -191,6 +317,12 @@ def renumber(items: list[dict]) -> list[dict]:
 def save_results(items: list[dict]) -> str:
     """写到当前结果文件（没有就新建一份）。"""
     name = current_file() or new_scan_file()
+    return save_results_as(name, items)
+
+
+def save_results_as(name: str, items: list[dict]) -> str:
+    """写到指定结果文件：扫描中途落盘用，避免中途打开别的结果时写错地方。"""
+    name = _sane(name)
     renumber(items)
     with _LOCK:
         _write(os.path.join(result_dir(), name), items)

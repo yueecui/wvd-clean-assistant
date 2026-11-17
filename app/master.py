@@ -120,19 +120,42 @@ def equipment_by_id() -> dict[int, dict]:
     return idx
 
 
+def _has_kana(name: str) -> bool:
+    """名字里有假名 = 没翻译的开发用条目（如「投擲（ボニー用）」）。"""
+    return any("\u3040" <= ch <= "\u30ff" for ch in name or "")
+
+
+def _usable_kinds() -> set:
+    """哪些 kind 下至少有一件正常中文名的装备。
+
+    极个别类型全表只有未翻译的开发用条目：109「投掷武器」就一件
+    「投擲（ボニー用）」（邦妮专用投掷物，玩家拿不到），这类类型不往界面输出，
+    避免规则里出现一个永远匹配不到的类型。
+    """
+    if "usable_kinds" in _CACHE:
+        return _CACHE["usable_kinds"]
+    kinds = {r["kind"] for r in equipment_list() if not _has_kana(r["name"])}
+    _CACHE["usable_kinds"] = kinds
+    return kinds
+
+
 def types() -> list[dict]:
     """EquipmentType：装备类型（不同武器分开算），id 即 Equipment.kind。"""
     if "types" in _CACHE:
         return _CACHE["types"]
+    usable = _usable_kinds()   # 没有装备数据的类型不输出
     rows = []
     for r in _load_json("EquipmentType"):
+        if usable and r.get("id") not in usable:
+            continue
         rows.append({
             "id": r.get("id"),
             "name": zhs(r.get("name")) or str(r.get("id")),
             "part": r.get("part"),
             "part_text": part_text(r.get("part")),
         })
-    rows.sort(key=lambda x: (x["part"] or 0, x["id"] or 0))
+    # 展示顺序与前端 @/parts 一致：单手武器 → 双手武器 → 头 → 手 → 胴 → 盾 → 脚 → 饰品
+    rows.sort(key=lambda x: (part_rank(x["part"]), x["id"] or 0))
     _CACHE["types"] = rows
     return rows
 
@@ -147,6 +170,18 @@ def type_name(kind) -> str:
 def part_text(part) -> str:
     return {1: "单手武器", 2: "双手武器", 3: "盾", 4: "头", 5: "胴",
             6: "手", 7: "脚", 8: "饰品"}.get(part, str(part or ""))
+
+
+# 部位展示顺序（与前端的类型筛选 / 规则分组一致），注意「胴」= 身体
+PART_ORDER = (1, 2, 4, 6, 5, 3, 7, 8)
+
+
+def part_rank(part) -> int:
+    """部位排序权重：未列出的排最后。"""
+    try:
+        return PART_ORDER.index(int(part))
+    except (TypeError, ValueError):
+        return len(PART_ORDER)
 
 
 def effect_format_names() -> dict[int, str]:

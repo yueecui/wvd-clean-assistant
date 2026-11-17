@@ -53,6 +53,6 @@ def notify(title: str, body: str) -> None:
 
 
 def task_finished(task: str, phase: str, msg: str, total: str) -> None:
-    """统一的结束通知：标题带任务名与结果，正文带摘要与总用时。"""
-    notify(f"WVD 装备梳理 · {task}{_PHASE_LABEL.get(phase, '结束')}",
-           f"{msg} · 总用时 {total}")
+    """统一的结束通知：标题带任务名与结果，正文带摘要与运行时间。"""
+    notify(f"WVD 装备清理助手 · {task}{_PHASE_LABEL.get(phase, '结束')}",
+           f"{msg} · 运行 {total}")

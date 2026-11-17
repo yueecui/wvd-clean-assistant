@@ -1,5 +1,5 @@
 @echo off
-rem 构建绿色版：dist\WvdScan\  （Vue 前端 + Python 后端 + 主数据 + 图标 + adb）
+rem 构建绿色版：dist\WvdClean\  （Vue 前端 + Python 后端 + 主数据 + 图标 + adb）
 setlocal
 cd /d "%~dp0"
 
@@ -10,18 +10,18 @@ call pnpm build || goto :err
 popd
 
 echo [2/4] 打包 python 后端 ...
-python -m PyInstaller --noconfirm --onefile --name wvd-scan ^
+python -m PyInstaller --noconfirm --onefile --name wvd-clean ^
   --add-data "web\dist;web\dist" ^
   --collect-all rapidocr_onnxruntime ^
   --collect-all onnxruntime ^
   app\main.py || goto :err
 
-echo [3/4] 组装 dist\WvdScan ...
-set OUT=dist\WvdScan
+echo [3/4] 组装 dist\WvdClean ...
+set OUT=dist\WvdClean
 rem 任何一步失败都要停下：exe 被占用时 rd / copy 会失败，否则会静默留下旧文件
 if exist "%OUT%" rd /s /q "%OUT%" || goto :err
 mkdir "%OUT%" || goto :err
-copy /y dist\wvd-scan.exe "%OUT%\" >nul || goto :err
+copy /y dist\wvd-clean.exe "%OUT%\" >nul || goto :err
 xcopy /e /i /y web\dist "%OUT%\web\dist" >nul || goto :err
 
 rem 不创建 config / rules / result，也不复制开发环境的配置，避免升级覆盖用户数据
@@ -50,7 +50,7 @@ echo [4/4] 完成
 echo.
 dir /b "%OUT%"
 echo.
-echo 输出: %OUT%\wvd-scan.exe
+echo 输出: %OUT%\wvd-clean.exe
 endlocal
 exit /b 0
 

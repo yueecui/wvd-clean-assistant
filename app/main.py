@@ -2,7 +2,7 @@
 """WVD 装备梳理（截图方案）—— 本地服务 + 网页 UI。
 
 源码运行:  python app/main.py            # http://127.0.0.1:23456/（开发环境）
-绿色版:    wvd-scan.exe                  # http://127.0.0.1:23333/，adb.exe 放 exe 同目录
+绿色版:    wvd-clean.exe                 # http://127.0.0.1:23333/，adb.exe 放 exe 同目录
 """
 from __future__ import annotations
 
@@ -17,13 +17,16 @@ from urllib.parse import unquote
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import capture  # noqa: E402
+import enhance  # noqa: E402
 import master   # noqa: E402
 import match    # noqa: E402
 import parse    # noqa: E402
 import perf     # noqa: E402
+import refine   # noqa: E402
 import reform   # noqa: E402
 import rules    # noqa: E402
 import scan     # noqa: E402
+import sell     # noqa: E402
 import store    # noqa: E402
 
 HOST = "127.0.0.1"
@@ -56,7 +59,8 @@ def _pick_static() -> str:
 STATIC_DIR = os.environ.get("WVD_SCAN_STATIC") or _pick_static()
 
 _cfg = {"adb": None, "serial": capture.DEFAULT_SERIAL,
-        "cpu_mode": perf.DEFAULT_MODE}
+        "cpu_mode": perf.DEFAULT_MODE,
+        "ocr_queue": scan.QUEUE_MAX_DEFAULT}   # 流水线队列上限 1~8
 _scanner: scan.Scanner | None = None
 
 
@@ -65,6 +69,7 @@ def scanner() -> scan.Scanner:
     adb = capture.resolve_adb(_cfg.get("adb"))
     if _scanner is None or _scanner.adb != adb or _scanner.serial != _cfg["serial"]:
         _scanner = scan.Scanner(adb, _cfg["serial"])
+    _scanner.queue_max = scan.clamp_queue_max(_cfg.get("ocr_queue"))
     return _scanner
 
 
@@ -77,6 +82,39 @@ def reformer() -> reform.Reformer:
     if _reformer is None or _reformer.adb != adb or _reformer.serial != _cfg["serial"]:
         _reformer = reform.Reformer(adb, _cfg["serial"])
     return _reformer
+
+
+_refiner: refine.Refiner | None = None
+
+
+def refiner() -> refine.Refiner:
+    global _refiner
+    adb = capture.resolve_adb(_cfg.get("adb"))
+    if _refiner is None or _refiner.adb != adb or _refiner.serial != _cfg["serial"]:
+        _refiner = refine.Refiner(adb, _cfg["serial"])
+    return _refiner
+
+
+_seller: sell.Seller | None = None
+
+
+def seller() -> sell.Seller:
+    global _seller
+    adb = capture.resolve_adb(_cfg.get("adb"))
+    if _seller is None or _seller.adb != adb or _seller.serial != _cfg["serial"]:
+        _seller = sell.Seller(adb, _cfg["serial"])
+    return _seller
+
+
+_enhancer: enhance.Enhancer | None = None
+
+
+def enhancer() -> enhance.Enhancer:
+    global _enhancer
+    adb = capture.resolve_adb(_cfg.get("adb"))
+    if _enhancer is None or _enhancer.adb != adb or _enhancer.serial != _cfg["serial"]:
+        _enhancer = enhance.Enhancer(adb, _cfg["serial"])
+    return _enhancer
 
 
 def reform_config() -> dict:
@@ -199,7 +237,8 @@ class Handler(BaseHTTPRequestHandler):
                 # 输入框只显示用户自己选的路径；留空 = 自动探测（adb_resolved）
                 self._json({"adb": _cfg.get("adb") or "", "serial": _cfg["serial"],
                             "adb_resolved": adb, "devices": capture.list_devices(adb),
-                            "cpu_mode": perf.mode()})
+                            "cpu_mode": perf.mode(),
+                            "ocr_queue": scan.clamp_queue_max(_cfg.get("ocr_queue"))})
             elif path == "/api/scan/status":
                 snap = scanner().snapshot()
                 if not snap["status"]["running"] and not snap["items"]:
@@ -211,6 +250,18 @@ class Handler(BaseHTTPRequestHandler):
                 self._json(reformer().snapshot())
             elif path == "/api/reform/config":
                 self._json(reform_config())
+            elif path == "/api/refine/status":
+                self._json(refiner().snapshot())
+            elif path == "/api/sell/status":
+                self._json(seller().snapshot())
+            elif path == "/api/enhance/status":
+                self._json(enhancer().snapshot())
+            elif path == "/api/refine/logs":
+                self._json({"files": store.list_logs("refine"),
+                            "current": store.current_log("refine")})
+            elif path == "/api/sell/logs":
+                self._json({"files": store.list_logs("sell"),
+                            "current": store.current_log("sell")})
             elif path == "/api/filter-notes":
                 self._json({"notes": store.load_filter_notes()})
             elif path == "/api/results/list":
@@ -274,6 +325,11 @@ class Handler(BaseHTTPRequestHandler):
                 if "cpu_mode" in b:
                     _cfg["cpu_mode"] = perf.set_mode(str(b["cpu_mode"]))
                     parse.reset_ocr()
+                if "ocr_queue" in b:
+                    # 对下一次扫描生效（队列在 start() 时按上限新建）
+                    _cfg["ocr_queue"] = scan.clamp_queue_max(b["ocr_queue"])
+                    if _scanner is not None:
+                        _scanner.queue_max = _cfg["ocr_queue"]
                 store.save_settings(_cfg)
                 self._json({"ok": True})
             elif path == "/api/filter-notes":
@@ -304,9 +360,30 @@ class Handler(BaseHTTPRequestHandler):
                 self._json(reformer().start(body))
             elif path == "/api/reform/stop":
                 self._json(reformer().stop())
+            elif path == "/api/refine/start":
+                self._json(refiner().start(str(body.get("mode") or "new")))
+            elif path == "/api/refine/open-log":
+                self._json(refiner().open_log(str(body.get("file") or "")))
+            elif path == "/api/refine/stop":
+                self._json(refiner().stop())
+            elif path == "/api/sell/start":
+                self._json(seller().start(str(body.get("mode") or "new")))
+            elif path == "/api/sell/open-log":
+                self._json(seller().open_log(str(body.get("file") or "")))
+            elif path == "/api/sell/stop":
+                self._json(seller().stop())
+            elif path == "/api/enhance/start":
+                self._json(enhancer().start())
+            elif path == "/api/enhance/stop":
+                self._json(enhancer().stop())
             elif path == "/api/scan/save":
                 store.save_results(scanner().items)
                 self._json({"ok": True, "count": len(scanner().items)})
+            elif path == "/api/mark":
+                idx = int(body.get("idx") or 0)
+                marks = [str(m) for m in (body.get("marks") or []) if str(m) in MARKS]
+                done = bool(body.get("done"))
+                self._json({"ok": bool(mark_item(idx, marks, done))})
             elif path == "/api/results/open":
                 items = store.open_result(str(body.get("file") or ""))
                 rules.apply(items)
@@ -384,6 +461,24 @@ class Handler(BaseHTTPRequestHandler):
             self._json({"error": str(e)}, 500)
 
 
+MARKS = ("1", "2", "3")
+
+
+def mark_item(idx: int, marks: list[str], done: bool) -> int:
+    """给某件装备打分组标记（1~3 可多选，√ = 已处理）。
+
+    扫描进行中改内存并顺手落盘；空闲时直接改当前结果文件。
+    """
+    items = scanner().items or store.load_results()
+    for it in items:
+        if it.get("idx") == idx:
+            it["marks"] = marks
+            it["done"] = done
+            store.save_results(items)
+            return 1
+    return 0
+
+
 def _reapply_alias(raw: str) -> int:
     """校准后：内存里的扫描结果 + 已落盘的结果都重新匹配一遍。"""
     key = match.split_reinforce(raw or "")[0]
@@ -453,7 +548,18 @@ def main() -> None:
     cfg = store.load_settings()
     if cfg:
         _cfg.update({k: v for k, v in cfg.items() if k in _cfg})
-    perf.set_mode(str(_cfg.get("cpu_mode") or perf.DEFAULT_MODE))
+    want = str(_cfg.get("cpu_mode") or perf.DEFAULT_MODE)
+    _cfg["cpu_mode"] = perf.set_mode(want)
+    _cfg["ocr_queue"] = scan.clamp_queue_max(_cfg.get("ocr_queue"))
+    if cfg and (cfg.get("cpu_mode") != _cfg["cpu_mode"]
+                or cfg.get("ocr_queue") != _cfg["ocr_queue"]):
+        # 老配置里的档位已下线（如 fast）/ 队列上限缺失或越界：把规范化后的值写回
+        cfg["cpu_mode"] = _cfg["cpu_mode"]
+        cfg["ocr_queue"] = _cfg["ocr_queue"]
+        try:
+            store.save_settings(cfg)
+        except Exception as e:  # noqa: BLE001
+            print(f"[cfg] 配置归一化写盘失败：{e}")
     rules.ensure_defaults()
     srv, port = _bind(PORT)
     url = f"http://{HOST}:{port}/"
@@ -462,7 +568,7 @@ def main() -> None:
             f.write(str(port))
     except Exception:
         pass
-    print(f"WVD 装备梳理 已启动: {url}")
+    print(f"WVD 装备清理助手 已启动: {url}")
     if not os.environ.get("WVD_NO_BROWSER"):
         try:
             import webbrowser

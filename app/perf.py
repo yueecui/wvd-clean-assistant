@@ -7,9 +7,11 @@ rapidocr_onnxruntime 并不认 intra_op_num_threads 参数：它的 OrtInferSess
 把线程数限下来；任务运行期间再把进程优先级降一档，让前台优先获得时间片。
 
 档位（config/settings.json 的 cpu_mode）：
-  fast      不限线程、正常优先级（旧行为，最快但会抢前台）
   balanced  2 线程 + 低优先级（默认）
   quiet     1 线程 + 低优先级 + 每件之间额外让出 0.15s
+
+旧版的 fast（不限线程、正常优先级）已取消：它会把 CPU 开满抢前台，
+改成流水线后均衡档的等待时间大多藏在截图里，实际速度差别很小。
 """
 from __future__ import annotations
 
@@ -18,11 +20,12 @@ import threading
 import time
 
 MODES: dict[str, tuple[int, bool, float]] = {
-    "fast": (0, False, 0.0),
     "balanced": (2, True, 0.0),
     "quiet": (1, True, 0.15),
 }
 DEFAULT_MODE = "balanced"
+# 已下线的老档位 → 新档位（settings.json 里可能还留着）
+LEGACY_MODES = {"fast": "balanced"}
 
 _mode = DEFAULT_MODE
 _lock = threading.Lock()
@@ -37,8 +40,9 @@ def mode() -> str:
 
 
 def set_mode(value: str) -> str:
-    """切换档位；任务进行中切换也会立刻调整优先级。"""
+    """切换档位；任务进行中切换也会立刻调整优先级。已下线的档位自动归到新档。"""
     global _mode
+    value = LEGACY_MODES.get(value, value)
     with _lock:
         _mode = value if value in MODES else DEFAULT_MODE
         low = _tasks > 0 and MODES[_mode][1]
@@ -47,7 +51,7 @@ def set_mode(value: str) -> str:
 
 
 def ocr_threads() -> int:
-    """0 = 不限，交给 ONNX Runtime 按核心数自动开。"""
+    """单个 OCR 会话的 intra_op 线程数（不再有「不限」档）。"""
     return MODES[_mode][0]
 
 
