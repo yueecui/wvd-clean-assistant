@@ -1,9 +1,16 @@
 {
   "schema": 1,
-  "app": {},
+  "app": {
+    "version": "1.0.0",
+    "asset": "wvd-clean-v1.0.0.zip",
+    "url": "https://github.com/yueecui/wvd-clean-assistant/releases/download/v1.0.0/wvd-clean-v1.0.0.zip",
+    "sha256": "df9cb5e2dd59c857d47bc09e23e348a504eeaa20e843313a867d4c02c6a578b8",
+    "size": 0,
+    "notes": "release v1.0.0"
+  },
   "resources": {
     "version": "20261117",
-    "base": "https://raw.githubusercontent.com/yueecui/wvd-clean-assistant/affbc41ac9fce6223327736035c798096d5449be/",
+    "base": "https://raw.githubusercontent.com/yueecui/wvd-clean-assistant/ab010c8eaa0395d6a3163d122d13253896ea56c2/",
     "masterdata": {
       "Equipment.json": "22a58f3903a10902a8e1aa796466b5a2766a1133ead66c72bac49d2ee8315425",
       "EquipmentEffect.json": "c0984ca110473d4a654bc0904d2332eb29f14c61e4c6e9663d5da9c8db8bb8db",
