@@ -15,6 +15,7 @@ python -m PyInstaller --noconfirm --onefile --name wvd-clean ^
   --add-data "web\dist;web\dist" ^
   --collect-all rapidocr_onnxruntime ^
   --collect-all onnxruntime ^
+  --collect-all scipy ^
   app\main.py || goto :err
 
 echo [3/4] 组装 dist\WvdClean ...
