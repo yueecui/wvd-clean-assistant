@@ -21,6 +21,9 @@ import subprocess
 import sys
 import time
 
+if hasattr(sys.stdout, "reconfigure"):  # Windows runner 默认 cp1252，中文 print 会炸
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "app"))
 import version  # noqa: E402
@@ -97,9 +100,9 @@ def main() -> None:
     with open(MANIFEST, "w", encoding="utf-8") as f:
         json.dump(m, f, ensure_ascii=False, indent=2)
         f.write("\n")
-    print(f"manifest 已更新: {MANIFEST}")
-    print(f"  资源版本={m['resources']['version']}  图标={len(m['resources']['icons'])}  "
-          f"主数据={len(m['resources']['masterdata'])}  base={m['resources']['base']}")
+    print(f"manifest updated: {MANIFEST}")
+    print(f"  res_ver={m['resources']['version']}  icons={len(m['resources']['icons'])}  "
+          f"masterdata={len(m['resources']['masterdata'])}  base={m['resources']['base']}")
 
 
 if __name__ == "__main__":

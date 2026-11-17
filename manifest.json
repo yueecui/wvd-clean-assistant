@@ -3,7 +3,7 @@
   "app": {},
   "resources": {
     "version": "20261117",
-    "base": "https://raw.githubusercontent.com/yueecui/wvd-clean-assistant/8fb7600f297b7584e51eb44d76a1a1977d7a3614/",
+    "base": "https://raw.githubusercontent.com/yueecui/wvd-clean-assistant/affbc41ac9fce6223327736035c798096d5449be/",
     "masterdata": {
       "Equipment.json": "22a58f3903a10902a8e1aa796466b5a2766a1133ead66c72bac49d2ee8315425",
       "EquipmentEffect.json": "c0984ca110473d4a654bc0904d2332eb29f14c61e4c6e9663d5da9c8db8bb8db",
