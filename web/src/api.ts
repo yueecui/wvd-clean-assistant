@@ -13,6 +13,7 @@ import type {
   ScoreRule,
   SellSnap,
   Settings,
+  SilentCheck,
   UpdateInfo,
   UpdateSnapshot,
 } from './types'
@@ -125,6 +126,7 @@ export const startEnhance = () =>
 export const stopEnhance = () => postJson<{ ok: boolean }>('/api/enhance/stop', {})
 
 export const getUpdate = () => getJson<UpdateSnapshot>('/api/update/status')
+export const silentCheck = () => getJson<SilentCheck>('/api/update/silent-check')
 export const checkUpdate = () =>
   postJson<{ ok: boolean; info?: UpdateInfo; error?: string }>('/api/update/check')
 export const applyResources = () =>

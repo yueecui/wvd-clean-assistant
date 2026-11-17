@@ -333,7 +333,12 @@ cd web; pnpm dev
 
 `manifest.json`（仓库根，绿色版也随包带一份基线）是唯一版本清单，含 `app`（版本/地址/校验和）与
 `resources`（版本/下载基址/每文件哈希）。默认从 GitHub raw 拉取，拉不到时回退到随包基线，
-窗口里会标明来源。**默认不联网**：只有打开更新窗口才检查一次，没有后台轮询。
+窗口里会标明来源。
+
+**启动时静默探测**：前端 `onMounted` 调 `GET /api/update/silent-check`，后端只拉 manifest 比程序版本
+（不写缓存、不改检查状态、失败一律当"无更新"），有新版则高亮「更新」按钮并自动弹窗告知；
+同一版本用 `localStorage`（`wvd.update.notified`）记住已提示过，不会每次刷新都弹。
+标题旁的版本徽标来自 `/api/update/status` 的 `app_version`。真正的资源/程序检查仍由用户点「更新」触发。
 
 手动刷新清单：`python tools/publish_resources.py`。
 只更新资源、不开界面：双击项目根目录的 **`update_resources.bat`**（内部调用

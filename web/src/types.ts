@@ -451,3 +451,13 @@ export interface UpdateSnapshot {
   state: { resource_version?: string; resources_at?: number }
   manifest: string
 }
+
+/** 启动时静默探测结果：失败也返回 ok=false，一律不打扰用户 */
+export interface SilentCheck {
+  ok: boolean
+  available: boolean
+  remote: string
+  local: string
+  notes: string
+  source: string
+}

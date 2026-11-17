@@ -133,6 +133,22 @@ def snapshot() -> dict:
             "manifest": manifest_url()}
 
 
+def silent_check() -> dict:
+    """启动时静默探测：只比程序版本，不写缓存、不改检查状态、不阻塞。
+
+    失败一律当成「无更新」，绝不弹错误打扰用户；真正检查由用户点「更新」触发。
+    """
+    try:
+        m, source = fetch_manifest()
+        app = m.get("app") or {}
+        remote = str(app.get("version") or "")
+        available = bool(app.get("url")) and _vtuple(remote) > _vtuple(version.VERSION)
+        return {"ok": True, "available": available, "remote": remote,
+                "local": version.VERSION, "notes": app.get("notes", ""), "source": source}
+    except Exception:  # noqa: BLE001
+        return {"ok": False, "available": False, "remote": "", "local": version.VERSION}
+
+
 def check() -> dict:
     """拉取 manifest 与本地对比；同步执行，结果缓存供 apply 使用。"""
     global _info

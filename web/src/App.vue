@@ -58,6 +58,24 @@ const calibrating = ref<ScanItem | null>(null)
 const showStart = ref(false)
 const showOpen = ref(false)
 const showUpdate = ref(false)
+const appVersion = ref('')
+const hasNewVersion = ref(false)
+
+/** 启动时静默探测新版本：有新版且该版本没提示过 → 自动弹窗；失败一律静默 */
+async function silentCheckVersion() {
+  try {
+    const r = await api.silentCheck()
+    if (r.available && r.remote) {
+      hasNewVersion.value = true
+      if (localStorage.getItem('wvd.update.notified') !== r.remote) {
+        showUpdate.value = true
+        try { localStorage.setItem('wvd.update.notified', r.remote) } catch { /* 隐私模式忽略 */ }
+      }
+    }
+  } catch {
+    /* 静默失败，不打扰 */
+  }
+}
 const resultFiles = ref<ResultFile[]>([])
 const currentFile = ref('')
 
@@ -258,6 +276,12 @@ onMounted(async () => {
   } catch {
     /* 目录拉不到不影响扫描 */
   }
+  try {
+    appVersion.value = (await api.getUpdate()).app_version || ''
+  } catch {
+    /* 版本号拉不到就不显示 */
+  }
+  void silentCheckVersion()
   timer = window.setInterval(() => {
     if (running.value) pull()
   }, 900)
@@ -273,6 +297,11 @@ onBeforeUnmount(() => {
     <header class="flex flex-wrap items-center gap-3 border-b border-white/10 bg-ink-800 px-4 py-2.5">
       <div class="flex items-baseline gap-2">
         <h1 class="text-[15px] font-semibold text-gray-100">WVD 装备清理助手</h1>
+        <span
+          v-if="appVersion"
+          class="rounded border border-gold-400/30 bg-gold-400/10 px-1.5 py-0.5 font-mono text-[10px] leading-none text-gold-300/90"
+          :title="'当前程序版本 v' + appVersion"
+        >v{{ appVersion }}</span>
       </div>
 
       <div class="flex overflow-hidden rounded-md border border-white/10 text-[12.5px]">
@@ -339,10 +368,13 @@ onBeforeUnmount(() => {
           {{ devices.length ? '已连接' : '未连接' }}
         </span>
         <button
-          class="ml-1 rounded border border-gold-400/30 px-2 py-1 text-gold-300/90 hover:bg-gold-400/10"
+          class="ml-1 rounded border px-2 py-1 transition"
+          :class="hasNewVersion
+            ? 'border-gold-400/50 bg-gold-400/15 text-gold-300 hover:bg-gold-400/25'
+            : 'border-white/10 text-gray-600 hover:border-white/20 hover:text-gray-400'"
           title="检查程序与游戏资源更新"
           @click="showUpdate = true"
-        >更新</button>
+        >更新<span v-if="hasNewVersion" class="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-gold-400 align-middle"></span></button>
       </div>
     </header>
 

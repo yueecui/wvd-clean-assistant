@@ -242,6 +242,8 @@ class Handler(BaseHTTPRequestHandler):
                             "ocr_queue": scan.clamp_queue_max(_cfg.get("ocr_queue"))})
             elif path == "/api/update/status":
                 self._json(update.snapshot())
+            elif path == "/api/update/silent-check":
+                self._json(update.silent_check())
             elif path == "/api/scan/status":
                 snap = scanner().snapshot()
                 if not snap["status"]["running"] and not snap["items"]:
