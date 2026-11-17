@@ -450,6 +450,7 @@ export interface UpdateSnapshot {
   app_version: string
   state: { resource_version?: string; resources_at?: number }
   manifest: string
+  github: { repo: string; releases: string }
 }
 
 /** 启动时静默探测结果：失败也返回 ok=false，一律不打扰用户 */

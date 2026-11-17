@@ -339,6 +339,7 @@ cd web; pnpm dev
 （不写缓存、不改检查状态、失败一律当"无更新"），有新版则高亮「更新」按钮并自动弹窗告知；
 同一版本用 `localStorage`（`wvd.update.notified`）记住已提示过，不会每次刷新都弹。
 标题旁的版本徽标来自 `/api/update/status` 的 `app_version`。真正的资源/程序检查仍由用户点「更新」触发。
+更新弹窗底部有「GitHub ↗」按钮，地址由后端 `github_urls()` 按 `WVD_UPDATE_REPO` 生成（指向 Releases 页），前端不硬编码。
 
 手动刷新清单：`python tools/publish_resources.py`。
 只更新资源、不开界面：双击项目根目录的 **`update_resources.bat`**（内部调用

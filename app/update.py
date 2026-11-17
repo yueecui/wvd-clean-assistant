@@ -33,12 +33,21 @@ MANIFEST_ENV = "WVD_UPDATE_MANIFEST"
 BASE_ENV = "WVD_UPDATE_BASE"
 
 
+def repo() -> str:
+    return os.environ.get("WVD_UPDATE_REPO", "").strip() or version.DEFAULT_REPO
+
+
 def manifest_url() -> str:
     env = os.environ.get(MANIFEST_ENV, "").strip()
     if env:
         return env
-    repo = os.environ.get("WVD_UPDATE_REPO", "").strip() or version.DEFAULT_REPO
-    return f"https://raw.githubusercontent.com/{repo}/main/manifest.json"
+    return f"https://raw.githubusercontent.com/{repo()}/main/manifest.json"
+
+
+def github_urls() -> dict:
+    """给前端「打开 GitHub」按钮用的地址。"""
+    r = repo()
+    return {"repo": f"https://github.com/{r}", "releases": f"https://github.com/{r}/releases"}
 
 
 def load_state() -> dict:
@@ -130,7 +139,7 @@ def snapshot() -> dict:
         st = dict(_status)
     return {"status": st, "info": _info,
             "app_version": version.VERSION, "state": load_state(),
-            "manifest": manifest_url()}
+            "manifest": manifest_url(), "github": github_urls()}
 
 
 def silent_check() -> dict:

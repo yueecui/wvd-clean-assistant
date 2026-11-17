@@ -191,6 +191,14 @@ function short(list?: string[]) {
             class="rounded bg-amber-500 px-3 py-1 font-medium text-black"
             @click="doRestart"
           >重启完成更新</button>
+          <a
+            v-if="snap.github?.releases"
+            :href="snap.github.releases"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="rounded border border-white/10 px-3 py-1 text-gray-400 hover:bg-white/5"
+            title="打开 GitHub Releases 页面"
+          >GitHub ↗</a>
           <button class="rounded border border-white/10 px-3 py-1 text-gray-400 hover:bg-white/5" @click="emit('close')">关闭</button>
         </div>
       </template>
