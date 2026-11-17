@@ -1,0 +1,35 @@
+name: Update resource manifest
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'masterdata/**'
+      - 'icons/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 重算资源哈希（保留 app 段）
+        run: python tools/publish_resources.py
+
+      - name: 提交 manifest
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add manifest.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: refresh resource manifest [skip ci]"
+            git push
+          fi

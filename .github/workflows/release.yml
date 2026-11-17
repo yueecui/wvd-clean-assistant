@@ -1,0 +1,114 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号（如 1.1.0）'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - name: 解析版本号
+        id: ver
+        shell: pwsh
+        run: |
+          $v = "${{ github.ref_name }}".TrimStart('v')
+          if ($v -notmatch '^\d+\.\d+\.\d+$') { $v = "${{ inputs.version }}" }
+          if ($v -notmatch '^\d+\.\d+\.\d+$') { throw "版本号格式不对: $v" }
+          "version=$v" >> $env:GITHUB_OUTPUT
+          "date=$(Get-Date -Format yyyyMMdd)" >> $env:GITHUB_OUTPUT
+
+      - name: 写入版本号
+        shell: pwsh
+        run: |
+          $v = "${{ steps.ver.outputs.version }}"
+          $p = 'app/version.py'
+          $text = Get-Content $p -Raw -Encoding UTF8
+          $text = [regex]::Replace($text, '(?m)^VERSION = .*$', "VERSION = `"$v`"")
+          Set-Content $p -Value $text -Encoding UTF8 -NoNewline
+
+      - name: 安装依赖
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
+      - name: 构建前端
+        working-directory: web
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm build
+
+      - name: 打包绿色版
+        shell: pwsh
+        run: .\build.bat
+
+      - name: 压缩并计算校验和
+        id: zip
+        shell: pwsh
+        run: |
+          $v = "${{ steps.ver.outputs.version }}"
+          Compress-Archive -Path dist\WvdClean\* -DestinationPath "wvd-clean-v$v.zip"
+          $sha = (Get-FileHash "wvd-clean-v$v.zip" -Algorithm SHA256).Hash.ToLower()
+          "sha=$sha" >> $env:GITHUB_OUTPUT
+
+      - name: 生成 manifest（资源快照用 tag 的 commit）
+        shell: pwsh
+        run: |
+          $v = "${{ steps.ver.outputs.version }}"
+          $url = "https://github.com/${{ github.repository }}/releases/download/v$v/wvd-clean-v$v.zip"
+          python tools/publish_resources.py `
+            --commit "${{ github.sha }}" `
+            --resource-version "${{ steps.ver.outputs.date }}" `
+            --app-version $v `
+            --app-asset "wvd-clean-v$v.zip" `
+            --app-sha "${{ steps.zip.outputs.sha }}" `
+            --app-url $url `
+            --notes "release v$v"
+
+      - name: 把 manifest 推回 main
+        shell: pwsh
+        run: |
+          $v = "${{ steps.ver.outputs.version }}"
+          Copy-Item manifest.json "$env:RUNNER_TEMP\manifest.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git checkout -B main origin/main
+          Copy-Item "$env:RUNNER_TEMP\manifest.json" manifest.json -Force
+          git add manifest.json
+          git diff --cached --quiet
+          if ($LASTEXITCODE -ne 0) {
+            git commit -m "chore: bump manifest to v$v [skip ci]"
+            git push origin main
+          }
+
+      - name: 发布 Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.ver.outputs.version }}
+          files: wvd-clean-v${{ steps.ver.outputs.version }}.zip
+          body: wvd-clean v${{ steps.ver.outputs.version }} 自动发布

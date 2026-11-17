@@ -2,8 +2,9 @@
 """masterdata 装备主数据：名称索引 + 图标路径。
 
 数据来源（按优先级探测）：
-    WVD_MASTER 环境变量 → <exe目录>/masterdata → 工程根/masterdata → 解包输出
+    WVD_MASTER 环境变量 → <exe目录>/masterdata → 工程根/masterdata → 老开发机解包目录
 
+资源已入仓：<工程根>/masterdata 与 <工程根>/icons；绿色版位于 exe 同目录。
 图标：<master 同级>/assets.lib/sprite/ListIcon/<list_icon_resource>.png，
      可用 WVD_ICONS 覆盖；也支持 <exe目录>/icons/。
 """
@@ -15,7 +16,8 @@ import sys
 
 _CACHE: dict = {}
 
-UNPACK = r"D:\WizardyDaphne\WizardyDaphneUnpack\out"
+# 老开发机上的解包输出，仅作最后兜底；可通过 WVD_UNPACK 覆盖。
+UNPACK = os.environ.get("WVD_UNPACK", r"D:\WizardyDaphne\WizardyDaphneUnpack\out")
 
 # 属性全表里要隐藏的项：会心回避在装备词条中不存在（实测扫描数据从未出现）
 HIDDEN_ATTRS = {"会心回避"}
@@ -27,6 +29,22 @@ def _base_dirs() -> list[str]:
         out.append(os.path.dirname(os.path.abspath(sys.executable)))
     out.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     return out
+
+
+def resource_root() -> str:
+    """资源可写根目录：绿色版 = exe 同目录，源码开发 = 工程根。
+
+    masterdata/ 与 icons/ 都挂在这里；资源更新只写这个目录，
+    与用户数据目录（store.data_dir()，可被 WVD_SCAN_DATA 覆盖）分开。
+    """
+    if getattr(sys, "frozen", False):
+        return os.path.dirname(os.path.abspath(sys.executable))
+    return os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+def invalidate() -> None:
+    """资源更新后清空内存缓存，下一次访问重新读盘。"""
+    _CACHE.clear()
 
 
 def master_dir() -> str:

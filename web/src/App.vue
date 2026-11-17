@@ -10,6 +10,7 @@ import SellPanel from './components/SellPanel.vue'
 import ResultTable from './components/ResultTable.vue'
 import RulesPanel from './components/RulesPanel.vue'
 import StartScanModal from './components/StartScanModal.vue'
+import UpdateModal from './components/UpdateModal.vue'
 import * as api from './api'
 import type {
   AttrGroups,
@@ -56,6 +57,7 @@ const errMsg = ref('')
 const calibrating = ref<ScanItem | null>(null)
 const showStart = ref(false)
 const showOpen = ref(false)
+const showUpdate = ref(false)
 const resultFiles = ref<ResultFile[]>([])
 const currentFile = ref('')
 
@@ -336,6 +338,11 @@ onBeforeUnmount(() => {
         <span :class="devices.length ? 'text-emerald-400' : 'text-rose-400'">
           {{ devices.length ? '已连接' : '未连接' }}
         </span>
+        <button
+          class="ml-1 rounded border border-gold-400/30 px-2 py-1 text-gold-300/90 hover:bg-gold-400/10"
+          title="检查程序与游戏资源更新"
+          @click="showUpdate = true"
+        >更新</button>
       </div>
     </header>
 
@@ -456,5 +463,7 @@ onBeforeUnmount(() => {
       @close="showOpen = false"
       @pick="pickResult"
     />
+
+    <UpdateModal :open="showUpdate" @close="showUpdate = false" />
   </div>
 </template>

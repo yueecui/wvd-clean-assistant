@@ -28,6 +28,7 @@ import rules    # noqa: E402
 import scan     # noqa: E402
 import sell     # noqa: E402
 import store    # noqa: E402
+import update   # noqa: E402
 
 HOST = "127.0.0.1"
 # 源码（开发环境）默认 23456，打包的绿色版默认 23333；WVD_SCAN_PORT 可覆盖
@@ -239,6 +240,8 @@ class Handler(BaseHTTPRequestHandler):
                             "adb_resolved": adb, "devices": capture.list_devices(adb),
                             "cpu_mode": perf.mode(),
                             "ocr_queue": scan.clamp_queue_max(_cfg.get("ocr_queue"))})
+            elif path == "/api/update/status":
+                self._json(update.snapshot())
             elif path == "/api/scan/status":
                 snap = scanner().snapshot()
                 if not snap["status"]["running"] and not snap["items"]:
@@ -332,6 +335,21 @@ class Handler(BaseHTTPRequestHandler):
                         _scanner.queue_max = _cfg["ocr_queue"]
                 store.save_settings(_cfg)
                 self._json({"ok": True})
+            elif path == "/api/update/check":
+                try:
+                    self._json({"ok": True, "info": update.check()})
+                except Exception as e:  # noqa: BLE001
+                    self._json({"ok": False, "error": str(e)}, 500)
+            elif path == "/api/update/resources":
+                try:
+                    update.apply_resources()
+                    self._json({"ok": True})
+                except Exception as e:  # noqa: BLE001
+                    self._json({"ok": False, "error": str(e)}, 500)
+            elif path == "/api/update/app":
+                self._json(update.prepare_app())
+            elif path == "/api/update/restart":
+                self._json(update.restart())
             elif path == "/api/filter-notes":
                 try:
                     notes = store.save_filter_notes(str(body.get("key") or ""),

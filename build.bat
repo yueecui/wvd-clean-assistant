@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 rem 构建绿色版：dist\WvdClean\  （Vue 前端 + Python 后端 + 主数据 + 图标 + adb）
 setlocal
 cd /d "%~dp0"
@@ -28,17 +29,21 @@ rem 不创建 config / rules / result，也不复制开发环境的配置，避�
 rem 三者都由运行时按需创建，随包的子目录只有 icons masterdata web
 
 rem 主数据：装备 / 类型 / 词条 / 改造石数值档位（评分、名称校验、星级判定要用）
-set MASTER=D:\WizardyDaphne\WizardyDaphneUnpack\out\masterdata
+rem 资源已入仓，默认从项目内 masterdata/ 复制；WVD_MASTER 仍可覆盖
+set MASTER=%~dp0masterdata
 if "%WVD_MASTER%" NEQ "" set MASTER=%WVD_MASTER%
 mkdir "%OUT%\masterdata"
 for %%F in (Equipment.json EquipmentType.json EquipmentEffect.json EquipmentEffectUpgrade.json) do (
   if exist "%MASTER%\%%F" copy /y "%MASTER%\%%F" "%OUT%\masterdata\" >nul
 )
 
-rem 装备图标
-set ICONS=D:\WizardyDaphne\WizardyDaphneUnpack\out\assets.lib\sprite\ListIcon
+rem 装备图标：默认项目内 icons/；WVD_ICONS 仍可覆盖
+set ICONS=%~dp0icons
 if "%WVD_ICONS%" NEQ "" set ICONS=%WVD_ICONS%
 if exist "%ICONS%" xcopy /e /i /y "%ICONS%" "%OUT%\icons" >nul
+
+rem 基线 manifest：无网络 / 远端未发布时用它兜底
+copy /y "%~dp0manifest.json" "%OUT%\" >nul
 
 rem 自带 adb（缺失时自动回退系统 PATH）
 set MUMU=C:\Program Files\Netease\MuMu\nx_main

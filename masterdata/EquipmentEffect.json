@@ -1,0 +1,354 @@
+[
+ {
+  "format_name": {
+   "ja": "攻撃力+{0}%",
+   "zhs": "攻击力+{0}%",
+   "zht": "攻撃力+{0}%",
+   "en": "ATK+{0}%"
+  },
+  "id": 6,
+  "name": {
+   "ja": "攻撃力上昇（％）",
+   "zhs": "攻击力提升（％）",
+   "zht": "攻撃力提升（％）",
+   "en": "ATK Increase (%)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "魔力+{0}%",
+   "zhs": "魔力+{0}%",
+   "zht": "魔力+{0}%",
+   "en": "MAG+{0}%"
+  },
+  "id": 7,
+  "name": {
+   "ja": "魔力上昇（％）",
+   "zhs": "魔力提升（％）",
+   "zht": "魔力提升（％）",
+   "en": "MAG Increase (%)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "神力+{0}%",
+   "zhs": "神力+{0}%",
+   "zht": "神力+{0}%",
+   "en": "DIV+{0}%"
+  },
+  "id": 8,
+  "name": {
+   "ja": "神力上昇（％）",
+   "zhs": "神力提升（％）",
+   "zht": "神力提升（％）",
+   "en": "DIV Increase (%)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "命中+{0}%",
+   "zhs": "命中+{0}%",
+   "zht": "命中+{0}%",
+   "en": "ACC+{0}%"
+  },
+  "id": 9,
+  "name": {
+   "ja": "命中上昇（％）",
+   "zhs": "命中提升（％）",
+   "zht": "命中提升（％）",
+   "en": "ACC Increase (%)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "回避+{0}%",
+   "zhs": "回避+{0}%",
+   "zht": "迴避+{0}%",
+   "en": "EVA+{0}%"
+  },
+  "id": 10,
+  "name": {
+   "ja": "回避上昇（％）",
+   "zhs": "回避提升（％）",
+   "zht": "迴避提升（％）",
+   "en": "EVA Increase (%)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "抵抗+{0}%",
+   "zhs": "抵抗+{0}%",
+   "zht": "抵抗+{0}%",
+   "en": "RES+{0}%"
+  },
+  "id": 11,
+  "name": {
+   "ja": "抵抗上昇（％）",
+   "zhs": "抵抗提升（％）",
+   "zht": "抵抗提升（％）",
+   "en": "RES Increase (%)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "防御力+{0}%",
+   "zhs": "防御力+{0}%",
+   "zht": "防禦力+{0}%",
+   "en": "DEF+{0}%"
+  },
+  "id": 12,
+  "name": {
+   "ja": "防御力上昇（％）",
+   "zhs": "防御力提升（％）",
+   "zht": "防御力提升（％）",
+   "en": "DEF Increase (%)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "魔術防御力+{0}%",
+   "zhs": "法术防御力+{0}%",
+   "zht": "法術防禦力+{0}%",
+   "en": "MDEF+{0}%"
+  },
+  "id": 13,
+  "name": {
+   "ja": "魔術防御力上昇（％）",
+   "zhs": "法术防御力提升（％）",
+   "zht": "法術防御力提升（％）",
+   "en": "MDEF Increase (%)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "会心+{0}%",
+   "zhs": "会心+{0}%",
+   "zht": "會心+{0}%",
+   "en": "SUR+{0}%"
+  },
+  "id": 14,
+  "name": {
+   "ja": "会心上昇（％）",
+   "zhs": "会心提升（％）",
+   "zht": "會心提升（％）",
+   "en": "SUR Increase (%)"
+  },
+  "visible": false
+ },
+ {
+  "format_name": {
+   "ja": "会心回避+{0}%",
+   "zhs": "会心回避+{0}%",
+   "zht": "會心迴避+{0}%",
+   "en": "SEV+{0}%"
+  },
+  "id": 15,
+  "name": {
+   "ja": "会心回避上昇（％）",
+   "zhs": "会心回避提升（％）",
+   "zht": "會心迴避提升（％）",
+   "en": "SEV Increase (%)"
+  },
+  "visible": false
+ },
+ {
+  "format_name": {
+   "ja": "行動速度+{0}%",
+   "zhs": "行动速度+{0}%",
+   "zht": "行動速度+{0}%",
+   "en": "ASPD+{0}%"
+  },
+  "id": 16,
+  "name": {
+   "ja": "行動速度上昇（％）",
+   "zhs": "行动速度提升（％）",
+   "zht": "行動速度提升（％）",
+   "en": "ASPD Increase (%)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "攻撃力+{0}",
+   "zhs": "攻击力+{0}",
+   "zht": "攻撃力+{0}",
+   "en": "ATK+{0}"
+  },
+  "id": 17,
+  "name": {
+   "ja": "攻撃力上昇（固定）",
+   "zhs": "攻击力提升（固定值）",
+   "zht": "攻撃力提升（固定值）",
+   "en": "ATK Increase (fixed)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "魔力+{0}",
+   "zhs": "魔力+{0}",
+   "zht": "魔力+{0}",
+   "en": "MAG+{0}"
+  },
+  "id": 18,
+  "name": {
+   "ja": "魔力上昇（固定）",
+   "zhs": "魔力提升（固定值）",
+   "zht": "魔力提升（固定值）",
+   "en": "MAG Increase (fixed)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "神力+{0}",
+   "zhs": "神力+{0}",
+   "zht": "神力+{0}",
+   "en": "DIV+{0}"
+  },
+  "id": 19,
+  "name": {
+   "ja": "神力上昇（固定）",
+   "zhs": "神力提升（固定值）",
+   "zht": "神力提升（固定值）",
+   "en": "DIV Increase (fixed)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "命中+{0}",
+   "zhs": "命中+{0}",
+   "zht": "命中+{0}",
+   "en": "ACC+{0}"
+  },
+  "id": 20,
+  "name": {
+   "ja": "命中上昇（固定）",
+   "zhs": "命中提升（固定值）",
+   "zht": "命中提升（固定值）",
+   "en": "ACC Increase (fixed)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "回避+{0}",
+   "zhs": "回避+{0}",
+   "zht": "迴避+{0}",
+   "en": "EVA+{0}"
+  },
+  "id": 21,
+  "name": {
+   "ja": "回避上昇（固定）",
+   "zhs": "回避提升（固定值）",
+   "zht": "迴避提升（固定值）",
+   "en": "EVA Increase (fixed)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "抵抗+{0}",
+   "zhs": "抵抗+{0}",
+   "zht": "抵抗+{0}",
+   "en": "RES+{0}"
+  },
+  "id": 22,
+  "name": {
+   "ja": "抵抗上昇（固定）",
+   "zhs": "抵抗提升（固定值）",
+   "zht": "抵抗提升（固定值）",
+   "en": "RES Increase (fixed)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "防御力+{0}",
+   "zhs": "防御力+{0}",
+   "zht": "防禦力+{0}",
+   "en": "DEF+{0}"
+  },
+  "id": 23,
+  "name": {
+   "ja": "防御力上昇（固定）",
+   "zhs": "防御力提升（固定值）",
+   "zht": "防御力提升（固定值）",
+   "en": "DEF Increase (fixed)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "魔術防御力+{0}",
+   "zhs": "法术防御力+{0}",
+   "zht": "法術防禦力+{0}",
+   "en": "MDEF+{0}"
+  },
+  "id": 24,
+  "name": {
+   "ja": "魔術防御力上昇（固定）",
+   "zhs": "法术防御力提升（固定值）",
+   "zht": "法術防御力提升（固定值）",
+   "en": "MDEF Increase (fixed)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "会心+{0}",
+   "zhs": "会心+{0}",
+   "zht": "會心+{0}",
+   "en": "SUR+{0}"
+  },
+  "id": 25,
+  "name": {
+   "ja": "会心上昇（固定）",
+   "zhs": "会心提升（固定值）",
+   "zht": "會心提升（固定值）",
+   "en": "SUR Increase (fixed)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "会心回避+{0}",
+   "zhs": "会心回避+{0}",
+   "zht": "會心迴避+{0}",
+   "en": "SEV+{0}"
+  },
+  "id": 26,
+  "name": {
+   "ja": "会心回避上昇（固定）",
+   "zhs": "会心回避提升（固定值）",
+   "zht": "會心迴避提升（固定值）",
+   "en": "SEV Increase (fixed)"
+  },
+  "visible": true
+ },
+ {
+  "format_name": {
+   "ja": "行動速度+{0}",
+   "zhs": "行动速度+{0}",
+   "zht": "行動速度+{0}",
+   "en": "ASPD+{0}"
+  },
+  "id": 27,
+  "name": {
+   "ja": "行動速度上昇（固定）",
+   "zhs": "行动速度提升（固定值）",
+   "zht": "行動速度提升（固定值）",
+   "en": "ASPD Increase (fixed)"
+  },
+  "visible": true
+ }
+]

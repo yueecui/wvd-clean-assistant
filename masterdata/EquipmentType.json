@@ -1,0 +1,1128 @@
+[
+ {
+  "attack_type": 4,
+  "dual_wield_motion_resource_number": 31,
+  "equippable_job_ids": [
+   100,
+   101,
+   103,
+   104,
+   900,
+   105,
+   107
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "freeze_count": 1,
+  "id": 100,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Weapon_dagger",
+  "motion_resource_number": 3,
+  "name": {
+   "ja": "短剣",
+   "zhs": "短剑",
+   "zht": "短劍",
+   "en": "Dagger"
+  },
+  "part": 1
+ },
+ {
+  "attack_type": 4,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   101,
+   104,
+   900,
+   105,
+   800,
+   802
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "freeze_count": 2,
+  "id": 101,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Weapon_sword_S",
+  "motion_resource_number": 1,
+  "name": {
+   "ja": "片手剣",
+   "zhs": "单手剑",
+   "zht": "單手劍",
+   "en": "One-Handed Sword"
+  },
+  "part": 1
+ },
+ {
+  "attack_type": 4,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   101,
+   104,
+   900
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "freeze_count": 4,
+  "id": 103,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Weapon_axe_S",
+  "motion_resource_number": 6,
+  "name": {
+   "ja": "片手斧",
+   "zhs": "单手斧",
+   "zht": "單手斧",
+   "en": "One-Handed Axe"
+  },
+  "part": 1
+ },
+ {
+  "attack_type": 5,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   101,
+   102,
+   103,
+   104,
+   108,
+   900,
+   800,
+   801,
+   802,
+   803
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   6
+  ],
+  "freeze_count": 2,
+  "id": 104,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Weapon_wand_S",
+  "motion_resource_number": 9,
+  "name": {
+   "ja": "片手杖",
+   "zhs": "单手杖",
+   "zht": "單手杖",
+   "en": "One-Handed Staff"
+  },
+  "part": 1
+ },
+ {
+  "attack_type": 5,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   101,
+   102,
+   104,
+   900,
+   802
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "freeze_count": 5,
+  "id": 105,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Weapon_blunt_S",
+  "motion_resource_number": 12,
+  "name": {
+   "ja": "片手鈍器",
+   "zhs": "单手钝器",
+   "zht": "單手鈍器",
+   "en": "One-Handed Blunt Weapon"
+  },
+  "part": 1
+ },
+ {
+  "attack_type": 6,
+  "dual_wield_motion_resource_number": 32,
+  "equippable_job_ids": [
+   105
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "freeze_count": 1,
+  "id": 106,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Kunai",
+  "motion_resource_number": 16,
+  "name": {
+   "ja": "投擲忍具",
+   "zhs": "投掷忍具",
+   "zht": "投擲忍具",
+   "en": "Throwing Ninja Tool"
+  },
+  "part": 1
+ },
+ {
+  "attack_type": 4,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   105
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "freeze_count": 3,
+  "id": 108,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Ninja_sword",
+  "motion_resource_number": 17,
+  "name": {
+   "ja": "忍者刀",
+   "zhs": "忍者刀",
+   "zht": "忍者刀",
+   "en": "Ninjato"
+  },
+  "part": 1
+ },
+ {
+  "attack_type": 6,
+  "dual_wield_motion_resource_number": 32,
+  "equippable_job_ids": [
+   100,
+   101,
+   102,
+   103,
+   104,
+   900,
+   105
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   6
+  ],
+  "freeze_count": 1,
+  "id": 109,
+  "is_visible": false,
+  "list_icon_resource": "ListIcon_Weapon_dagger",
+  "motion_resource_number": 15,
+  "name": {
+   "ja": "投擲武器",
+   "zhs": "投掷武器",
+   "zht": "投擲武器",
+   "en": "Throwing Weapon"
+  },
+  "part": 1
+ },
+ {
+  "attack_type": 4,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   800,
+   106,
+   803
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "freeze_count": 7,
+  "id": 110,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Weapon_katana",
+  "motion_resource_number": 18,
+  "name": {
+   "ja": "刀",
+   "zhs": "刀",
+   "zht": "刀",
+   "en": "Katana"
+  },
+  "part": 1
+ },
+ {
+  "attack_type": 1,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   104,
+   900,
+   800,
+   802,
+   200
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   50
+  ],
+  "freeze_count": 10,
+  "id": 200,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Weapon_sword_L",
+  "motion_resource_number": 2,
+  "name": {
+   "ja": "両手剣",
+   "zhs": "双手剑",
+   "zht": "雙手劍",
+   "en": "Two-Handed Sword"
+  },
+  "part": 2
+ },
+ {
+  "attack_type": 3,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   104,
+   900,
+   107,
+   201
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   51
+  ],
+  "freeze_count": 5,
+  "id": 201,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Weapon_spear_L",
+  "motion_resource_number": 5,
+  "name": {
+   "ja": "両手槍",
+   "zhs": "双手枪",
+   "zht": "雙手槍",
+   "en": "Two-Handed Spear"
+  },
+  "part": 2
+ },
+ {
+  "attack_type": 1,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   104,
+   900,
+   200
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   50
+  ],
+  "freeze_count": 12,
+  "id": 202,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Weapon_axe_L",
+  "motion_resource_number": 7,
+  "name": {
+   "ja": "両手斧",
+   "zhs": "双手斧",
+   "zht": "雙手斧",
+   "en": "Two-Handed Axe"
+  },
+  "part": 2
+ },
+ {
+  "attack_type": 2,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   102,
+   103,
+   104,
+   900,
+   800,
+   801,
+   802
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "freeze_count": 3,
+  "id": 203,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Weapon_wand_L",
+  "motion_resource_number": 10,
+  "name": {
+   "ja": "両手杖",
+   "zhs": "双手杖",
+   "zht": "雙手杖",
+   "en": "Two-Handed Staff"
+  },
+  "part": 2
+ },
+ {
+  "attack_type": 2,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   102,
+   104,
+   900,
+   802,
+   200
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   50
+  ],
+  "freeze_count": 15,
+  "id": 204,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Weapon_blunt_L",
+  "motion_resource_number": 13,
+  "name": {
+   "ja": "両手鈍器",
+   "zhs": "双手钝器",
+   "zht": "雙手鈍器",
+   "en": "Two-Handed Blunt Weapon"
+  },
+  "part": 2
+ },
+ {
+  "attack_type": 3,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   101,
+   104,
+   900,
+   107
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "freeze_count": 2,
+  "id": 205,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Weapon_bow",
+  "motion_resource_number": 8,
+  "name": {
+   "ja": "弓",
+   "zhs": "弓",
+   "zht": "弓",
+   "en": "Bow"
+  },
+  "part": 2
+ },
+ {
+  "attack_type": 1,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   106,
+   803
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "freeze_count": 10,
+  "id": 206,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Weapon_ootachi",
+  "motion_resource_number": 19,
+  "name": {
+   "ja": "大太刀",
+   "zhs": "大太刀",
+   "zht": "大太刀",
+   "en": "Odachi"
+  },
+  "part": 2
+ },
+ {
+  "attack_type": 7,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   202
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   52
+  ],
+  "freeze_count": 2,
+  "id": 207,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Weapon_monk",
+  "motion_resource_number": 14,
+  "name": {
+   "ja": "セスタス",
+   "zhs": "钢拳",
+   "zht": "鋼拳",
+   "en": "Cesti"
+  },
+  "part": 2
+ },
+ {
+  "attack_type": 5,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   101,
+   102,
+   103,
+   104,
+   900,
+   802,
+   108
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   6
+  ],
+  "freeze_count": 2,
+  "id": 300,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Guard_S",
+  "motion_resource_number": 0,
+  "name": {
+   "ja": "小盾",
+   "zhs": "小盾",
+   "zht": "小盾",
+   "en": "Small Shield"
+  },
+  "part": 3
+ },
+ {
+  "attack_type": 2,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   101,
+   102,
+   104,
+   900,
+   802,
+   108
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "freeze_count": 5,
+  "id": 301,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Guard_M",
+  "motion_resource_number": 0,
+  "name": {
+   "ja": "軽盾",
+   "zhs": "轻盾",
+   "zht": "輕盾",
+   "en": "Light Shield"
+  },
+  "part": 3
+ },
+ {
+  "attack_type": 2,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   104,
+   900,
+   802
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "freeze_count": 15,
+  "id": 302,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Guard_L",
+  "motion_resource_number": 0,
+  "name": {
+   "ja": "重盾",
+   "zhs": "重盾",
+   "zht": "重盾",
+   "en": "Heavy Shield"
+  },
+  "part": 3
+ },
+ {
+  "attack_type": 0,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   101,
+   102,
+   103,
+   104,
+   900,
+   105,
+   106,
+   108,
+   800,
+   801,
+   107,
+   802,
+   803,
+   200,
+   201,
+   202
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   6,
+   50,
+   51,
+   52
+  ],
+  "freeze_count": 0,
+  "id": 400,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_head_S",
+  "motion_resource_number": 0,
+  "name": {
+   "ja": "帽子",
+   "zhs": "帽子",
+   "zht": "帽子",
+   "en": "Hat"
+  },
+  "part": 4
+ },
+ {
+  "attack_type": 0,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   101,
+   102,
+   104,
+   900,
+   105,
+   106,
+   800,
+   802,
+   803,
+   200,
+   201,
+   202
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   50,
+   51,
+   52
+  ],
+  "freeze_count": 0,
+  "id": 401,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_head_M",
+  "motion_resource_number": 0,
+  "name": {
+   "ja": "軽兜",
+   "zhs": "轻盔",
+   "zht": "輕盔",
+   "en": "Light Helmet"
+  },
+  "part": 4
+ },
+ {
+  "attack_type": 0,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   104,
+   900,
+   802,
+   200
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   50
+  ],
+  "freeze_count": 0,
+  "id": 402,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_head_L",
+  "motion_resource_number": 0,
+  "name": {
+   "ja": "重兜",
+   "zhs": "重盔",
+   "zht": "重盔",
+   "en": "Heavy Helmet"
+  },
+  "part": 4
+ },
+ {
+  "attack_type": 0,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   101,
+   102,
+   103,
+   104,
+   900,
+   105,
+   106,
+   108,
+   800,
+   801,
+   107,
+   802,
+   803,
+   200,
+   201,
+   202
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   6,
+   50,
+   51,
+   52
+  ],
+  "freeze_count": 0,
+  "id": 500,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_armor_S",
+  "motion_resource_number": 0,
+  "name": {
+   "ja": "衣服",
+   "zhs": "衣服",
+   "zht": "衣服",
+   "en": "Clothes"
+  },
+  "part": 5
+ },
+ {
+  "attack_type": 0,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   101,
+   102,
+   104,
+   900,
+   105,
+   106,
+   800,
+   802,
+   803,
+   200,
+   201,
+   202
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   50,
+   51,
+   52
+  ],
+  "freeze_count": 0,
+  "id": 501,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_armor_M",
+  "motion_resource_number": 0,
+  "name": {
+   "ja": "軽鎧",
+   "zhs": "轻铠",
+   "zht": "輕鎧",
+   "en": "Light Armor"
+  },
+  "part": 5
+ },
+ {
+  "attack_type": 0,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   104,
+   900,
+   802,
+   200
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   50
+  ],
+  "freeze_count": 0,
+  "id": 502,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_armor_L",
+  "motion_resource_number": 0,
+  "name": {
+   "ja": "重鎧",
+   "zhs": "重铠",
+   "zht": "重鎧",
+   "en": "Heavy Armor"
+  },
+  "part": 5
+ },
+ {
+  "attack_type": 0,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   101,
+   102,
+   103,
+   104,
+   900,
+   105,
+   106,
+   108,
+   800,
+   801,
+   107,
+   802,
+   803,
+   200,
+   201,
+   202
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   6,
+   50,
+   51,
+   52
+  ],
+  "freeze_count": 0,
+  "id": 600,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_handleft_S",
+  "motion_resource_number": 0,
+  "name": {
+   "ja": "手袋",
+   "zhs": "手套",
+   "zht": "手套",
+   "en": "Gloves"
+  },
+  "part": 6
+ },
+ {
+  "attack_type": 0,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   101,
+   102,
+   104,
+   900,
+   105,
+   106,
+   800,
+   802,
+   803,
+   200,
+   201,
+   202
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   50,
+   51,
+   52
+  ],
+  "freeze_count": 0,
+  "id": 601,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_handleft_M",
+  "motion_resource_number": 0,
+  "name": {
+   "ja": "軽篭手",
+   "zhs": "护手",
+   "zht": "護手",
+   "en": "Light Gauntlets"
+  },
+  "part": 6
+ },
+ {
+  "attack_type": 0,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   104,
+   900,
+   802,
+   200
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   50
+  ],
+  "freeze_count": 0,
+  "id": 602,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_handleft_L",
+  "motion_resource_number": 0,
+  "name": {
+   "ja": "重篭手",
+   "zhs": "臂铠",
+   "zht": "臂鎧",
+   "en": "Heavy Gauntlets"
+  },
+  "part": 6
+ },
+ {
+  "attack_type": 0,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   101,
+   102,
+   103,
+   104,
+   900,
+   105,
+   106,
+   108,
+   800,
+   801,
+   107,
+   802,
+   803,
+   200,
+   201,
+   202
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   6,
+   50,
+   51,
+   52
+  ],
+  "freeze_count": 0,
+  "id": 700,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_foot_S",
+  "motion_resource_number": 0,
+  "name": {
+   "ja": "靴",
+   "zhs": "靴",
+   "zht": "靴",
+   "en": "Shoes"
+  },
+  "part": 7
+ },
+ {
+  "attack_type": 0,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   101,
+   102,
+   104,
+   900,
+   105,
+   106,
+   800,
+   802,
+   803,
+   200,
+   201,
+   202
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   50,
+   51,
+   52
+  ],
+  "freeze_count": 0,
+  "id": 701,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_foot_M",
+  "motion_resource_number": 0,
+  "name": {
+   "ja": "軽足鎧",
+   "zhs": "护腿",
+   "zht": "護腿",
+   "en": "Light Armor Boots"
+  },
+  "part": 7
+ },
+ {
+  "attack_type": 0,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   104,
+   900,
+   802,
+   200
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   50
+  ],
+  "freeze_count": 0,
+  "id": 702,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_foot_L",
+  "motion_resource_number": 0,
+  "name": {
+   "ja": "重足鎧",
+   "zhs": "足铠",
+   "zht": "足鎧",
+   "en": "Heavy Armor Boots"
+  },
+  "part": 7
+ },
+ {
+  "attack_type": 0,
+  "dual_wield_motion_resource_number": 0,
+  "equippable_job_ids": [
+   100,
+   101,
+   102,
+   103,
+   104,
+   900,
+   105,
+   106,
+   108,
+   800,
+   801,
+   107,
+   802,
+   803,
+   200,
+   201,
+   202
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4,
+   6,
+   50,
+   51,
+   52
+  ],
+  "freeze_count": 0,
+  "id": 800,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_accessory",
+  "motion_resource_number": 0,
+  "name": {
+   "ja": "装飾品",
+   "zhs": "饰品",
+   "zht": "飾品",
+   "en": "Accessories"
+  },
+  "part": 8
+ },
+ {
+  "attack_type": 4,
+  "dual_wield_motion_resource_number": 31,
+  "equippable_job_ids": [
+   100,
+   101,
+   103,
+   104,
+   108,
+   900
+  ],
+  "equippable_race_ids": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "freeze_count": 1,
+  "id": 901,
+  "is_visible": true,
+  "list_icon_resource": "ListIcon_Weapon_tool",
+  "motion_resource_number": 3,
+  "name": {
+   "ja": "工具",
+   "zhs": "工具",
+   "zht": "工具",
+   "en": "Tool"
+  },
+  "part": 1
+ }
+]

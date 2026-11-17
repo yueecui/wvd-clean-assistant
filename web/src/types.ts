@@ -417,3 +417,37 @@ export interface RulesResp {
   attr_groups: AttrGroups
   types: EquipType[]
 }
+
+export interface UpdateStatus {
+  running: boolean
+  phase: string
+  message: string
+  done: number
+  total: number
+  error: string | null
+}
+
+export interface UpdateInfo {
+  checked_at: number
+  /** 本次数据来自远端 manifest 还是本地基线 */
+  source: string
+  local_app: string
+  local_resource: string
+  remote_app: string
+  remote_resource: string
+  app_available: boolean
+  resource_available: boolean
+  to_add: string[]
+  to_update: string[]
+  notes: string
+  asset: string
+  error?: string
+}
+
+export interface UpdateSnapshot {
+  status: UpdateStatus
+  info: UpdateInfo
+  app_version: string
+  state: { resource_version?: string; resources_at?: number }
+  manifest: string
+}

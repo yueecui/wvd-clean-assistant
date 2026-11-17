@@ -1,0 +1,1762 @@
+[
+ {
+  "id": 611,
+  "effect_id": 6,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 612,
+  "effect_id": 6,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 613,
+  "effect_id": 6,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 614,
+  "effect_id": 6,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 615,
+  "effect_id": 6,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 621,
+  "effect_id": 6,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 622,
+  "effect_id": 6,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 623,
+  "effect_id": 6,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 624,
+  "effect_id": 6,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 625,
+  "effect_id": 6,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 711,
+  "effect_id": 7,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 712,
+  "effect_id": 7,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 713,
+  "effect_id": 7,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 714,
+  "effect_id": 7,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 715,
+  "effect_id": 7,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 721,
+  "effect_id": 7,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 722,
+  "effect_id": 7,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 723,
+  "effect_id": 7,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 724,
+  "effect_id": 7,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 725,
+  "effect_id": 7,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 811,
+  "effect_id": 8,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 812,
+  "effect_id": 8,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 813,
+  "effect_id": 8,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 814,
+  "effect_id": 8,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 815,
+  "effect_id": 8,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 821,
+  "effect_id": 8,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 822,
+  "effect_id": 8,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 823,
+  "effect_id": 8,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 824,
+  "effect_id": 8,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 825,
+  "effect_id": 8,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 911,
+  "effect_id": 9,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 912,
+  "effect_id": 9,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 913,
+  "effect_id": 9,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 914,
+  "effect_id": 9,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 915,
+  "effect_id": 9,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 921,
+  "effect_id": 9,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 922,
+  "effect_id": 9,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 923,
+  "effect_id": 9,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 924,
+  "effect_id": 9,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 925,
+  "effect_id": 9,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1011,
+  "effect_id": 10,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 1012,
+  "effect_id": 10,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1013,
+  "effect_id": 10,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1014,
+  "effect_id": 10,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1015,
+  "effect_id": 10,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1021,
+  "effect_id": 10,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 1022,
+  "effect_id": 10,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1023,
+  "effect_id": 10,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1024,
+  "effect_id": 10,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1025,
+  "effect_id": 10,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1111,
+  "effect_id": 11,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 1112,
+  "effect_id": 11,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1113,
+  "effect_id": 11,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1114,
+  "effect_id": 11,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1115,
+  "effect_id": 11,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1121,
+  "effect_id": 11,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 1122,
+  "effect_id": 11,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1123,
+  "effect_id": 11,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1124,
+  "effect_id": 11,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1125,
+  "effect_id": 11,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1211,
+  "effect_id": 12,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 1212,
+  "effect_id": 12,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1213,
+  "effect_id": 12,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1214,
+  "effect_id": 12,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1215,
+  "effect_id": 12,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1221,
+  "effect_id": 12,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 1222,
+  "effect_id": 12,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1223,
+  "effect_id": 12,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1224,
+  "effect_id": 12,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1225,
+  "effect_id": 12,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1311,
+  "effect_id": 13,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 1312,
+  "effect_id": 13,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1313,
+  "effect_id": 13,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1314,
+  "effect_id": 13,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1315,
+  "effect_id": 13,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1321,
+  "effect_id": 13,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 1322,
+  "effect_id": 13,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1323,
+  "effect_id": 13,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1324,
+  "effect_id": 13,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1325,
+  "effect_id": 13,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1411,
+  "effect_id": 14,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 1412,
+  "effect_id": 14,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1413,
+  "effect_id": 14,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1414,
+  "effect_id": 14,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1415,
+  "effect_id": 14,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1421,
+  "effect_id": 14,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 1422,
+  "effect_id": 14,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1423,
+  "effect_id": 14,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1424,
+  "effect_id": 14,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1425,
+  "effect_id": 14,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1511,
+  "effect_id": 15,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 1512,
+  "effect_id": 15,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1513,
+  "effect_id": 15,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1514,
+  "effect_id": 15,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1515,
+  "effect_id": 15,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1521,
+  "effect_id": 15,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 1522,
+  "effect_id": 15,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1523,
+  "effect_id": 15,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1524,
+  "effect_id": 15,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1525,
+  "effect_id": 15,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1611,
+  "effect_id": 16,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 1612,
+  "effect_id": 16,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1613,
+  "effect_id": 16,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1614,
+  "effect_id": 16,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1615,
+  "effect_id": 16,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1621,
+  "effect_id": 16,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 1622,
+  "effect_id": 16,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1623,
+  "effect_id": 16,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1624,
+  "effect_id": 16,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1625,
+  "effect_id": 16,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1711,
+  "effect_id": 17,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1712,
+  "effect_id": 17,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1713,
+  "effect_id": 17,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1714,
+  "effect_id": 17,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1715,
+  "effect_id": 17,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 1721,
+  "effect_id": 17,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1722,
+  "effect_id": 17,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1723,
+  "effect_id": 17,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1724,
+  "effect_id": 17,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1725,
+  "effect_id": 17,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 1811,
+  "effect_id": 18,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1812,
+  "effect_id": 18,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1813,
+  "effect_id": 18,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1814,
+  "effect_id": 18,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1815,
+  "effect_id": 18,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 1821,
+  "effect_id": 18,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1822,
+  "effect_id": 18,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1823,
+  "effect_id": 18,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1824,
+  "effect_id": 18,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1825,
+  "effect_id": 18,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 1911,
+  "effect_id": 19,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1912,
+  "effect_id": 19,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1913,
+  "effect_id": 19,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1914,
+  "effect_id": 19,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1915,
+  "effect_id": 19,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 1921,
+  "effect_id": 19,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 1922,
+  "effect_id": 19,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 1923,
+  "effect_id": 19,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 1924,
+  "effect_id": 19,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 1925,
+  "effect_id": 19,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 2011,
+  "effect_id": 20,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 2012,
+  "effect_id": 20,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 2013,
+  "effect_id": 20,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 2014,
+  "effect_id": 20,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 2015,
+  "effect_id": 20,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 2021,
+  "effect_id": 20,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 2022,
+  "effect_id": 20,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 2023,
+  "effect_id": 20,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 2024,
+  "effect_id": 20,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 2025,
+  "effect_id": 20,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 2111,
+  "effect_id": 21,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 2112,
+  "effect_id": 21,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 2113,
+  "effect_id": 21,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 2114,
+  "effect_id": 21,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 2115,
+  "effect_id": 21,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 2121,
+  "effect_id": 21,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 2122,
+  "effect_id": 21,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 2123,
+  "effect_id": 21,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 2124,
+  "effect_id": 21,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 2125,
+  "effect_id": 21,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 2211,
+  "effect_id": 22,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 2212,
+  "effect_id": 22,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 2213,
+  "effect_id": 22,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 2214,
+  "effect_id": 22,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 2215,
+  "effect_id": 22,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 2221,
+  "effect_id": 22,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 2222,
+  "effect_id": 22,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 2223,
+  "effect_id": 22,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 2224,
+  "effect_id": 22,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 2225,
+  "effect_id": 22,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 2311,
+  "effect_id": 23,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 2312,
+  "effect_id": 23,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 2313,
+  "effect_id": 23,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 2314,
+  "effect_id": 23,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 2315,
+  "effect_id": 23,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 2321,
+  "effect_id": 23,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 2322,
+  "effect_id": 23,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 2323,
+  "effect_id": 23,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 2324,
+  "effect_id": 23,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 2325,
+  "effect_id": 23,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 2411,
+  "effect_id": 24,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 2412,
+  "effect_id": 24,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 2413,
+  "effect_id": 24,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 2414,
+  "effect_id": 24,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 2415,
+  "effect_id": 24,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 2421,
+  "effect_id": 24,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 2422,
+  "effect_id": 24,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 2423,
+  "effect_id": 24,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 2424,
+  "effect_id": 24,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 2425,
+  "effect_id": 24,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 2511,
+  "effect_id": 25,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 2512,
+  "effect_id": 25,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 3
+ },
+ {
+  "id": 2513,
+  "effect_id": 25,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 4
+ },
+ {
+  "id": 2514,
+  "effect_id": 25,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 2515,
+  "effect_id": 25,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 2521,
+  "effect_id": 25,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 2522,
+  "effect_id": 25,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 3
+ },
+ {
+  "id": 2523,
+  "effect_id": 25,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 4
+ },
+ {
+  "id": 2524,
+  "effect_id": 25,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 2525,
+  "effect_id": 25,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 2611,
+  "effect_id": 26,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 2612,
+  "effect_id": 26,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 2613,
+  "effect_id": 26,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 2614,
+  "effect_id": 26,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 2615,
+  "effect_id": 26,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 2621,
+  "effect_id": 26,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 3
+ },
+ {
+  "id": 2622,
+  "effect_id": 26,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 4
+ },
+ {
+  "id": 2623,
+  "effect_id": 26,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 2624,
+  "effect_id": 26,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 2625,
+  "effect_id": 26,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 5,
+  "param_max": 7
+ },
+ {
+  "id": 2711,
+  "effect_id": 27,
+  "rarity": 1,
+  "kind": 1,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 2712,
+  "effect_id": 27,
+  "rarity": 2,
+  "kind": 1,
+  "param_min": 2,
+  "param_max": 3
+ },
+ {
+  "id": 2713,
+  "effect_id": 27,
+  "rarity": 3,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 4
+ },
+ {
+  "id": 2714,
+  "effect_id": 27,
+  "rarity": 4,
+  "kind": 1,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 2715,
+  "effect_id": 27,
+  "rarity": 5,
+  "kind": 1,
+  "param_min": 4,
+  "param_max": 6
+ },
+ {
+  "id": 2721,
+  "effect_id": 27,
+  "rarity": 1,
+  "kind": 2,
+  "param_min": 1,
+  "param_max": 2
+ },
+ {
+  "id": 2722,
+  "effect_id": 27,
+  "rarity": 2,
+  "kind": 2,
+  "param_min": 2,
+  "param_max": 3
+ },
+ {
+  "id": 2723,
+  "effect_id": 27,
+  "rarity": 3,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 4
+ },
+ {
+  "id": 2724,
+  "effect_id": 27,
+  "rarity": 4,
+  "kind": 2,
+  "param_min": 3,
+  "param_max": 5
+ },
+ {
+  "id": 2725,
+  "effect_id": 27,
+  "rarity": 5,
+  "kind": 2,
+  "param_min": 4,
+  "param_max": 6
+ }
+]

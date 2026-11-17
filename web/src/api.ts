@@ -13,6 +13,8 @@ import type {
   ScoreRule,
   SellSnap,
   Settings,
+  UpdateInfo,
+  UpdateSnapshot,
 } from './types'
 
 /** 开始方式：新建日志 / 接着当前日志累加 */
@@ -121,4 +123,13 @@ export const getEnhanceStatus = () => getJson<EnhanceSnap>('/api/enhance/status'
 export const startEnhance = () =>
   postJson<{ ok: boolean; error?: string }>('/api/enhance/start', {})
 export const stopEnhance = () => postJson<{ ok: boolean }>('/api/enhance/stop', {})
+
+export const getUpdate = () => getJson<UpdateSnapshot>('/api/update/status')
+export const checkUpdate = () =>
+  postJson<{ ok: boolean; info?: UpdateInfo; error?: string }>('/api/update/check')
+export const applyResources = () =>
+  postJson<{ ok: boolean; error?: string }>('/api/update/resources')
+export const prepareApp = () =>
+  postJson<{ ok: boolean; need_restart?: boolean; version?: string; error?: string }>('/api/update/app')
+export const restartApp = () => postJson<{ ok: boolean; error?: string }>('/api/update/restart')
 
